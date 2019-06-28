@@ -43,6 +43,7 @@ if ~isfield(opt,'pth_mtv'),     opt.pth_mtv     = '/home/mbrud/dev/mbrud/code/ma
 % Add denoising toolbox to path
 addpath(opt.pth_mtv)
 
+% Because it is possible to include labels (will add more abt this soon)
 if ~iscell(Nii)
     Nii = {Nii};
 end
