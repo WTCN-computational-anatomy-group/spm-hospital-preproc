@@ -21,7 +21,7 @@ if numel(Nii) > 1
         
         f = Nii{2}(n).dat.fname;    
         f = nm_reorient(f,vx);
-        do_reset_origin(f)
+        do_reset_origin(f);
 
         Nii{2}(n) = nifti(f);
     end    

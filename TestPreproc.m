@@ -1,39 +1,45 @@
-% Demo runs of the RunPreproc function
+% Demo runs of the RunPreproc function. Four different test-cases.
 %
-% OBS: 
-%   1. Add your own paths on line 24 (single-channel example) or 27 (multi-
-%      channel example) or 33 (CT)
-%   2. Add path to the denoising code on line 47, downloadable from:
-%      '/home/mbrud/dev/mbrud/code/matlab/MTV-preproc'
+% OBS: To run, replace the hardcoded paths with your own data
 %_______________________________________________________________________
 %  Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
 
 clear;
 
 %----------------------
-% Read image data
+% Pick a test-case
+% 1. MRI single-channel
+% 2. MRI multi-channel
+% 3. MRI multi-channel w. labels
+% 4. CT
+TESTCASE = 3;
 %----------------------
 
-singlechannel = true; % Single- or multi-channel data?
-mri           = true; % MRI or CT?
-
-if mri
-    % Data is MRI
-    if singlechannel
-        % One channel example
-        P = '0005-00001-000001-01.nii';
-    else
-        % More than one channel example
-        P = char({'1282601181791321211150584332_T1.nii',...
-                  '1282601181791321211150584332_T2.nii',...
-                  '1282601181791321211150584332_Flair.nii'});
-    end   
+if     TESTCASE == 1
+    % MRI single-channel
+    Nii = nifti(fullfile('example-data','mri-sc','0005-00001-000001-01.nii'));
+elseif TESTCASE == 2        
+    % MRI multi-channel
+    Nii = nifti(char({fullfile('example-data','mri-mc','1282601181791321211150584332_T1.nii'),...
+                      fullfile('example-data','mri-mc','1282601181791321211150584332_T2.nii'),...
+                      fullfile('example-data','mri-mc','1282601181791321211150584332_Flair.nii')}));
+elseif TESTCASE == 3
+    % MRI multi-channel w. labels
+    Nii       = cell(1,2);
+    Nii{1}    = nifti;
+    Nii{1}(1) = nifti(fullfile('example-data','labels','1-T1.nii'));
+    Nii{1}(2) = nifti(fullfile('example-data','labels','1-FLAIR.nii'));    
+    Nii{1}(3) = nifti(fullfile('example-data','labels','1-IR.nii'));    
+    Nii{2}    = nifti; % Map label image to intensity image it was annotated on
+    Nii{2}(1) = nifti;
+    Nii{2}(2) = nifti(fullfile('example-data','labels','1-segm.nii'));
+    Nii{2}(3) = nifti;
+elseif TESTCASE == 4
+    % CT
+    Nii = nifti(fullfile('example-data','ct','3_s40271750-0004-00003-000001.nii'));
 else
-    % Data is CT
-    P = '3_s40271750-0004-00003-000001.nii';
+    error('Undefined test-case!')
 end
-
-Nii = nifti(P);
 
 %----------------------
 % Set preprocessing options
@@ -44,12 +50,12 @@ opt.do.coreg    = true;
 opt.do.denoise  = true;
 opt.do.crop     = true;
 opt.do.vx       = false;
-opt.pth_mtv     = '/home/mbrud/dev/mbrud/code/matlab/MTV-preproc';
-if ~singlechannel && mri
+opt.pth_mtv     = fullfile('/home','mbrud','dev','mbrud','code','matlab','MTV-preproc');
+if TESTCASE == 2 || TESTCASE == 3
     opt.do.reslice = true;
     opt.do.vx      = true;
 end
-if ~mri
+if TESTCASE == 4
     opt.do.res_orig = true;
 end
 
@@ -64,7 +70,11 @@ end
 %----------------------
 
 C = numel(P);
-for c=1:C
-    Mc = spm_get_space(P{c}); 
-    spm_get_space(P{c},M{c}*Mc); 
+for i=1:2
+    for c=1:C
+        if isempty(P{i}{c}), continue; end
+        
+        Mc = spm_get_space(P{i}{c}); 
+        spm_get_space(P{i}{c},M{c}*Mc); 
+    end
 end

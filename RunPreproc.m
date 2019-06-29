@@ -3,7 +3,8 @@ function [P,M] = RunPreproc(Nii,opt)
 %
 % Nii - 1xC nifti struct, or empty to use file selector, of patient images
 % opt - Preprocessing options
-% P   - Path of preprocessed image(s)
+% P   - Cell array of paths to preprocessed image(s) and labels (if
+%       present)
 % M   - Orientation matrices to go back to native space orientation as:
 %           Mc = spm_get_space(P{c}); 
 %           spm_get_space(f,M{c}*Mc); 
@@ -18,7 +19,7 @@ end
 if nargin < 2, opt = struct; end
 % Do
 if ~isfield(opt,'do'),          opt.do          = struct; end
-if ~isfield(opt.do,'res_orig'), opt.do.res_orig = false; end
+if ~isfield(opt.do,'res_orig'), opt.do.res_orig = true; end
 if ~isfield(opt.do,'real_mni'), opt.do.real_mni = true; end
 if ~isfield(opt.do,'crop'),     opt.do.crop     = true; end
 if ~isfield(opt.do,'coreg'),    opt.do.coreg    = true; end
@@ -43,7 +44,8 @@ if ~isfield(opt,'pth_mtv'),     opt.pth_mtv     = '/home/mbrud/dev/mbrud/code/ma
 % Add denoising toolbox to path
 addpath(opt.pth_mtv)
 
-% Because it is possible to include labels (will add more abt this soon)
+% Because it is possible to include labels, in the second index of Nii 
+% (i.e. Nii{2})
 if ~iscell(Nii)
     Nii = {Nii};
 end
@@ -104,12 +106,18 @@ end
 
 % Give path of preprocessed image(s) as output and save orientation
 % matrices
-P = cell(1,C);
-for c=1:C
-    P{c}      = Nii{1}(c).dat.fname;
-    [pth,nam] = fileparts(P{c});
-    nP        = fullfile(pth,['mat' nam '.mat']);
-    Mc        = M{c};
-    save(nP,'Mc')
+P    = cell(1,2);
+P{1} = cell(1,C);
+P{2} = cell(1,C);
+for i=1:2
+    for c=1:C
+        if isempty(Nii{i}(c).dat), continue; end
+        
+        P{i}{c}   = Nii{i}(c).dat.fname;
+        [pth,nam] = fileparts(P{i}{c});
+        nP        = fullfile(pth,['mat' nam '.mat']);
+        Mc        = M{c};
+        save(nP,'Mc')
+    end
 end
 %==========================================================================
