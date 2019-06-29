@@ -1,8 +1,8 @@
 % Demo runs of the RunPreproc function
 %
 % OBS: 
-%   1. Add your own paths on line 23 (single-channel example) or 26 (multi-
-%      channel example) or 43 (CT)
+%   1. Add your own paths on line 24 (single-channel example) or 27 (multi-
+%      channel example) or 33 (CT)
 %   2. Add path to the denoising code on line 47, downloadable from:
 %      '/home/mbrud/dev/mbrud/code/matlab/MTV-preproc'
 %_______________________________________________________________________
@@ -14,9 +14,8 @@ clear;
 % Read image data
 %----------------------
 
-% Single- or multi-channel data
-singlechannel = true;
-mri           = true;
+singlechannel = true; % Single- or multi-channel data?
+mri           = true; % MRI or CT?
 
 if mri
     % Data is MRI
