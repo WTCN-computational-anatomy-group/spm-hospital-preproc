@@ -31,9 +31,9 @@ fprintf('done!\n')
 
 %==========================================================================
 function npth = nm_reorient(pth,vx,prefix,deg)
-if nargin < 2, vx     = [];    end
-if nargin < 3, prefix = 'ro_'; end
-if nargin < 4, deg    = 1;     end
+if nargin < 2, vx     = [];   end
+if nargin < 3, prefix = 'ro'; end
+if nargin < 4, deg    = 1;    end
 
 if ~isempty(vx) && length(vx) < 3
     vx=[vx vx vx];
