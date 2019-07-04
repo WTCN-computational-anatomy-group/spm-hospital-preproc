@@ -12,7 +12,7 @@ clear;
 % 2. MRI multi-channel
 % 3. MRI multi-channel w. labels
 % 4. CT
-TESTCASE = 3;
+TESTCASE = 1;
 %----------------------
 
 if     TESTCASE == 1
@@ -45,11 +45,13 @@ end
 % Set preprocessing options
 %----------------------
 
+opt.do.vx       = false;
+opt.do.res_orig = false;
 opt.do.real_mni = true;
 opt.do.coreg    = true;
 opt.do.denoise  = true;
 opt.do.crop     = true;
-opt.do.vx       = false;
+opt.do.write2d  = true;
 opt.pth_mtv     = fullfile('/home','mbrud','dev','mbrud','code','matlab','MTV-preproc');
 if TESTCASE == 2 || TESTCASE == 3
     opt.do.reslice = true;
@@ -63,16 +65,16 @@ end
 % Do preprocessing
 %----------------------
 
-[P,M] = RunPreproc(Nii,opt);
+[P,~,M] = RunPreproc(Nii,opt);
 
 %----------------------
 % Go back to native space orientation
 %----------------------
 
-C = numel(P);
+C = numel(P{1});
 for i=1:2
     for c=1:C
-        if isempty(P{i}{c}), continue; end
+        if (i == 2 && numel(P{i}) == 1) || isempty(P{i}{c}), continue; end
         
         Mc = spm_get_space(P{i}{c}); 
         spm_get_space(P{i}{c},M{c}*Mc); 

@@ -22,9 +22,15 @@ if constrain_mx
     bb(2,:) = min(bb(2,:),V.dim(1:3));
 end
 
+[~,~,oext] = fileparts(prefix);
+
 VO            = V;
 [pth,nam,ext] = fileparts(V.fname);
-VO.fname      = fullfile(pth,[prefix nam ext]);
+if ~isempty(oext)
+    VO.fname  = prefix;
+else
+    VO.fname  = fullfile(pth,[prefix nam ext]);
+end
 VO.dim(1:3)   = diff(bb)+1;
 VO.mat        = V.mat*spm_matrix((bb(1,:)-1));
 

@@ -1,10 +1,12 @@
-function [P,M] = RunPreproc(Nii,opt)
+function [P,P2d,M] = RunPreproc(Nii,opt)
 % Some basic preprocessing of hospital neuroimaging data.
 %
 % Nii - 1xC nifti struct, or empty to use file selector, of patient images
 % opt - Preprocessing options
 % P   - Cell array of paths to preprocessed image(s) and labels (if
 %       present)
+% P2d - Cell array of paths to 2d versions of preprocessed image(s) 
+%       and labels (if present). OBS: Only if opt.do.write2d = true
 % M   - Orientation matrices to go back to native space orientation as:
 %           Mc = spm_get_space(P{c}); 
 %           spm_get_space(f,M{c}*Mc); 
@@ -12,37 +14,17 @@ function [P,M] = RunPreproc(Nii,opt)
 %  Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
 
 if nargin == 0
-   Nii = nifti(spm_select(Inf,'nifti','Please select images of one patient'));   
+   Nii = nifti(spm_select(Inf,'nifti','Please select patient image(s)'));   
 end
 
-% Set default options
+% Set options
 if nargin < 2, opt = struct; end
-% Do
-if ~isfield(opt,'do'),          opt.do          = struct; end
-if ~isfield(opt.do,'res_orig'), opt.do.res_orig = true; end
-if ~isfield(opt.do,'real_mni'), opt.do.real_mni = true; end
-if ~isfield(opt.do,'crop'),     opt.do.crop     = true; end
-if ~isfield(opt.do,'coreg'),    opt.do.coreg    = true; end
-if ~isfield(opt.do,'denoise'),  opt.do.denoise  = true; end
-if ~isfield(opt.do,'reslice'),  opt.do.reslice  = true; end
-if ~isfield(opt.do,'vx'),       opt.do.vx       = true; end
-% Output directory
-if ~isfield(opt,'dir_out'),     opt.dir_out     = 'output'; end
-% Reslice options
-if ~isfield(opt,'reslice'),     opt.reslice     = struct; end
-if ~isfield(opt.reslice,'ref'), opt.reslice.ref = 1; end
-% Voxel size options
-if ~isfield(opt,'vx'),          opt.vx          = struct; end
-if ~isfield(opt.vx,'size'),     opt.vx.size     = 1; end
-if ~isfield(opt.vx,'def'),      opt.vx.deg      = 4; end
-% Crop options
-if ~isfield(opt,'crop'),        opt.crop        = struct; end
-if ~isfield(opt.crop,'neck'),   opt.crop.neck   = false; end
-% Path to denoising toolbox (https://github.com/WCHN/mtv-preproc)
-if ~isfield(opt,'pth_mtv'),     opt.pth_mtv     = '/home/mbrud/dev/mbrud/code/matlab/MTV-preproc'; end
+opt = get_default_opt(opt);
 
-% Add denoising toolbox to path
-addpath(opt.pth_mtv)
+if opt.do.denoise
+    % Add denoising toolbox to path
+    addpath(opt.pth_mtv)
+end
 
 % Because it is possible to include labels, in the second index of Nii 
 % (i.e. Nii{2})
@@ -59,10 +41,14 @@ end
 s           = what(opt.dir_out);
 opt.dir_out = s.path;
 
-% Copy so to not overwrite originals
+% Copy (so to not overwrite originals)
 Nii = make_copies(Nii,opt.dir_out);
 
-% Initialise orientation matrix (to go back to native space)
+% Allocate output
+P    = cell(1,2);
+P{1} = cell(1,C);
+P{2} = cell(1,C);
+P2d  = P;
 M    = cell(1,C);
 M(:) = {eye(4)};
 
@@ -78,7 +64,7 @@ end
 
 if opt.do.coreg
     % Coreg
-    Nii = coreg(Nii);
+    Nii = coreg(Nii,opt.coreg.ref);
 end
 
 if opt.do.denoise
@@ -86,7 +72,7 @@ if opt.do.denoise
     Nii = denoise(Nii);
 
     % Coreg (one more time after denoising)
-    Nii = coreg(Nii);
+    Nii = coreg(Nii,opt.coreg.ref);
 end
 
 if opt.do.crop
@@ -104,20 +90,25 @@ if opt.do.reslice
     Nii = reslice(Nii,opt.reslice.ref);
 end
 
-% Give path of preprocessed image(s) as output and save orientation
+if opt.do.write2d
+    % Write 2D versions
+    [Nii,P2d] = write_2d(Nii,opt.dir_out2d,opt.write2d.deg,opt.write2d.axis_2d);
+end
+
+% Give path of preprocessed image(s) as output and (possibly) save orientation
 % matrices
-P    = cell(1,2);
-P{1} = cell(1,C);
-P{2} = cell(1,C);
 for i=1:2
     for c=1:C
-        if isempty(Nii{i}(c).dat), continue; end
+        if (i == 2 && numel(Nii) == 1) || isempty(Nii{i}(c).dat), continue; end
         
-        P{i}{c}   = Nii{i}(c).dat.fname;
-        [pth,nam] = fileparts(P{i}{c});
-        nP        = fullfile(pth,['mat' nam '.mat']);
-        Mc        = M{c};
-        save(nP,'Mc')
+        P{i}{c} = Nii{i}(c).dat.fname;
+                     
+        if nargout >= 3
+            [pth,nam] = fileparts(P{i}{c});   
+            nP        = fullfile(pth,['mat' nam '.mat']);
+            Mc        = M{c};
+            save(nP,'Mc')
+        end
     end
 end
 %==========================================================================
