@@ -1,4 +1,4 @@
-function [Nii,P] = write_2d(Nii,dir_out2d,deg,axis_2d)
+function P = write_2d(Nii,dir_out2d,deg,axis_2d)
 if nargin < 3, deg      = 0;    end
 if nargin < 4, axis_2d  = 3;    end
 

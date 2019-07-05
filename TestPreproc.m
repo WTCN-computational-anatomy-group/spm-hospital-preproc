@@ -12,7 +12,7 @@ clear;
 % 2. MRI multi-channel
 % 3. MRI multi-channel w. labels
 % 4. CT
-TESTCASE = 1;
+TESTCASE = 3;
 %----------------------
 
 if     TESTCASE == 1
@@ -60,23 +60,25 @@ end
 if TESTCASE == 4
     opt.do.res_orig = true;
 end
+% opt.do.denoise  = false;
 
 %----------------------
 % Do preprocessing
 %----------------------
 
-[P,~,M] = RunPreproc(Nii,opt);
+out = RunPreproc(Nii,opt);
 
 %----------------------
 % Go back to native space orientation
 %----------------------
 
-C = numel(P{1});
-for i=1:2
-    for c=1:C
-        if (i == 2 && numel(P{i}) == 1) || isempty(P{i}{c}), continue; end
-        
-        Mc = spm_get_space(P{i}{c}); 
-        spm_get_space(P{i}{c},M{c}*Mc); 
+C = numel(out.pth.im);
+for c=1:C    
+    Mc = spm_get_space(out.pth.im{c}); 
+    spm_get_space(out.pth.im{c},out.mat{c}*Mc); 
+    
+    if ~isempty(out.pth.lab{c})
+        Mc = spm_get_space(out.pth.lab{c}); 
+        spm_get_space(out.pth.lab{c},out.mat{c}*Mc); 
     end
 end

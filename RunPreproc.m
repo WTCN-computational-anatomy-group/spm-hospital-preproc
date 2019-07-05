@@ -1,15 +1,21 @@
-function [P,P2d,M] = RunPreproc(Nii,opt)
+function out = RunPreproc(Nii,opt)
 % Some basic preprocessing of hospital neuroimaging data.
 %
-% Nii - 1xC nifti struct, or empty to use file selector, of patient images
+% INPUT
+% Nii - 1xC nifti struct (or empty to use file selector) of patient images
 % opt - Preprocessing options
-% P   - Cell array of paths to preprocessed image(s) and labels (if
-%       present)
-% P2d - Cell array of paths to 2d versions of preprocessed image(s) 
-%       and labels (if present). OBS: Only if opt.do.write2d = true
-% M   - Orientation matrices to go back to native space orientation as:
-%           Mc = spm_get_space(P{c}); 
-%           spm_get_space(f,M{c}*Mc); 
+%
+% OUTPUT
+% out.pth.im    - Cell array of paths to preprocessed image(s)
+% out.pth.im2d  - Cell array of paths to 2D versions of preprocessed
+%                 image(s) (if opt.do.write2d = true)
+% out.pth.lab   - Cell array of path to label image (if labels given)
+% out.pth.lab2d - Cell array of path to 2D version of label image (if 
+%                 labels given and if opt.do.write2d = tru)
+% out.mat       - Orientation matrices to go back to native space 
+%                 orientation as:
+%                   Mc = spm_get_space(P{c}); 
+%                   spm_get_space(f,M{c}*Mc); 
 %_______________________________________________________________________
 %  Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
 
@@ -44,14 +50,8 @@ opt.dir_out = s.path;
 % Copy (so to not overwrite originals)
 Nii = make_copies(Nii,opt.dir_out);
 
-% Allocate output
-P    = cell(1,2);
-P{1} = cell(1,C);
-P{2} = cell(1,C);
-P2d  = P;
 M    = cell(1,C);
 M(:) = {eye(4)};
-
 if opt.do.res_orig
     % Reset origin (important for CT)
     [Nii,M] = reset_origin(Nii);
@@ -92,23 +92,44 @@ end
 
 if opt.do.write2d
     % Write 2D versions
-    [Nii,P2d] = write_2d(Nii,opt.dir_out2d,opt.write2d.deg,opt.write2d.axis_2d);
+    P2d = write_2d(Nii,opt.dir_out2d,opt.write2d.deg,opt.write2d.axis_2d);
 end
 
-% Give path of preprocessed image(s) as output and (possibly) save orientation
-% matrices
+% Allocate output
+out           = struct;
+out.pth.im    = cell(1,C);
+out.pth.im2d  = cell(1,C);
+out.pth.lab   = cell(1,C);
+out.pth.lab2d = cell(1,C);
+out.mat       = cell(1,C);
 for i=1:2
     for c=1:C
         if (i == 2 && numel(Nii) == 1) || isempty(Nii{i}(c).dat), continue; end
         
-        P{i}{c} = Nii{i}(c).dat.fname;
-                     
-        if nargout >= 3
+        if i == 1
+            out.pth.im{c}  = Nii{i}(c).dat.fname;
+        else
+            out.pth.lab{c} = Nii{i}(c).dat.fname;
+        end
+                            
+        if exist('P2d','var')
+            if i == 1
+                out.pth.im2d{c}  = P2d{i}{c};
+            else
+                out.pth.lab2d{c} = P2d{i}{c};
+            end
+        end
+                   
+        if opt.do.writemat
             [pth,nam] = fileparts(P{i}{c});   
             nP        = fullfile(pth,['mat' nam '.mat']);
             Mc        = M{c};
             save(nP,'Mc')
         end
+
+        if i == 1
+            out.mat{c} = M{c};
+        end  
     end
 end
 %==========================================================================

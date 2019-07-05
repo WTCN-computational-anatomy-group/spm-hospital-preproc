@@ -9,6 +9,7 @@ if ~isfield(opt.do,'denoise'),  opt.do.denoise  = true;   end
 if ~isfield(opt.do,'reslice'),  opt.do.reslice  = true;   end
 if ~isfield(opt.do,'vx'),       opt.do.vx       = true;   end
 if ~isfield(opt.do,'write2d'),  opt.do.write2d  = true;   end
+if ~isfield(opt.do,'writemat'), opt.do.writemat = false;   end
 % Output directory
 if ~isfield(opt,'dir_out'),     opt.dir_out   = 'output';    end
 if ~isfield(opt,'dir_out2d'),   opt.dir_out2d = opt.dir_out; end
