@@ -30,6 +30,7 @@ if ~isfield(opt.crop,'neck'),   opt.crop.neck = false;  end
 if ~isfield(opt,'write2d'),         opt.write2d         = struct; end
 if ~isfield(opt.write2d,'deg'),     opt.write2d.deg     = 0;      end
 if ~isfield(opt.write2d,'axis_2d'), opt.write2d.axis_2d = 3;      end
+if ~isfield(opt.write2d,'sliceix'), opt.write2d.sliceix = [];     end
 % Path to denoising toolbox (https://github.com/WCHN/mtv-preproc)
 if ~isfield(opt,'pth_mtv'),     opt.pth_mtv   = '/home/mbrud/dev/mbrud/code/matlab/MTV-preproc'; end
 %==========================================================================

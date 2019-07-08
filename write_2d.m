@@ -1,6 +1,7 @@
-function P = write_2d(Nii,dir_out2d,deg,axis_2d)
+function [Nii,P] = write_2d(Nii,dir_out2d,deg,axis_2d,sliceix)
 if nargin < 3, deg      = 0;    end
 if nargin < 4, axis_2d  = 3;    end
+if nargin < 5, sliceix    = [];   end
 
 fprintf('Writing 2D...')
 N = numel(Nii{1});
@@ -8,7 +9,7 @@ for n=1:N
     f           = Nii{1}(n).dat.fname;     
     [~,nam,ext] = fileparts(f);
     nf          = fullfile(dir_out2d,['2d' nam ext]);
-    do_write(f,nf,deg,axis_2d);    
+    do_write(f,nf,deg,axis_2d,sliceix);    
     Nii{1}(n)   = nifti(nf);
 end
 
@@ -20,7 +21,7 @@ if numel(Nii) > 1
         f           = Nii{2}(n).dat.fname;  
         [~,nam,ext] = fileparts(f);
         nf          = fullfile(dir_out2d,['2d' nam ext]);
-        do_write(f,nf,deg,axis_2d);    
+        do_write(f,nf,deg,axis_2d,sliceix);    
         Nii{2}(n)   = nifti(nf);
     end    
 end
@@ -40,22 +41,29 @@ fprintf('done!\n')
 %==========================================================================
 
 %==========================================================================
-function do_write(fname,ofname,deg,axis_2d)
-if nargin < 3, deg      = 0; end
-if nargin < 4, axis_2d  = 3; end
+function do_write(fname,ofname,deg,axis_2d,sliceix)
+if nargin < 3, deg      = 0;  end
+if nargin < 4, axis_2d  = 3;  end
+if nargin < 5, sliceix  = []; end
 
 % Create bounding box
 V  = spm_vol(fname);
 dm = V.dim;
 if axis_2d     == 1
-    d1 = floor(dm(1)/2) + 1;
-    bb = [d1 d1;-inf inf;-inf inf];   
+    if isempty(sliceix)        
+        sliceix = floor(dm(1)/2) + 1;
+    end
+    bb = [sliceix sliceix;-inf inf;-inf inf];   
 elseif axis_2d == 2
-    d1 = floor(dm(2)/2) + 1;
-    bb = [-inf inf;d1 d1;-inf inf];
-elseif axis_2d == 3 
-    d1 = floor(dm(3)/2) + 1;
-    bb = [-inf inf;-inf inf;d1 d1];
+    if isempty(sliceix) 
+        sliceix = floor(dm(2)/2) + 1;
+    end
+    bb = [-inf inf;sliceix sliceix;-inf inf];
+elseif axis_2d == 3
+    if isempty(sliceix) 
+        sliceix = floor(dm(3)/2) + 1;
+    end
+    bb = [-inf inf;-inf inf;sliceix sliceix];
 end                
 
 % Crop according to bounding-box

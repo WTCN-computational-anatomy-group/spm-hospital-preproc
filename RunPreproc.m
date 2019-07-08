@@ -92,7 +92,7 @@ end
 
 if opt.do.write2d
     % Write 2D versions
-    P2d = write_2d(Nii,opt.dir_out2d,opt.write2d.deg,opt.write2d.axis_2d);
+    [~,P2d] = write_2d(Nii,opt.dir_out2d,opt.write2d.deg,opt.write2d.axis_2d,opt.write2d.sliceix);
 end
 
 % Allocate output
