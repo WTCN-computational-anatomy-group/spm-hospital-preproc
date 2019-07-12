@@ -1,4 +1,5 @@
-% Demo runs of the RunPreproc function. Four different test-cases.
+% Demo runs of the RunPreproc function. A couple of different test-cases
+% are provided.
 %
 % OBS: To run, replace the hardcoded paths with your own data
 %_______________________________________________________________________
@@ -14,7 +15,7 @@ clear;
 % 4. CT
 % 5. Hospital MRI superres
 % 6. MRI single-channel with 2D version
-TESTCASE = 3;
+TESTCASE = 1;
 %----------------------
 
 if     TESTCASE == 1
@@ -74,10 +75,12 @@ if TESTCASE == 5
     opt.crop.neck   = true;
 end
 if TESTCASE == 6
+    opt.crop.neck       = true;
     opt.write2d.axis_2d = 3; % 1. Sagittal 2. Coronal 3. Axial
     opt.do.write2d      = true;
 end
-% opt.do.denoise  = false;
+% opt.do.write2d = true;
+% opt.do.denoise = false;
 
 %----------------------
 % Do preprocessing
