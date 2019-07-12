@@ -11,7 +11,7 @@ function VO = subvol(V,bb,prefix,deg,constrain_mx)
 %     subvol(V,[32 64 ; 1 64 ; 1 48]');
 %__________________________________________________________________________
 % Copyright (C) 2018 Wellcome Trust Centre for Neuroimaging
-if nargin < 3, prefix       = 'sv_'; end
+if nargin < 3, prefix       = 'sv'; end
 if nargin < 4, deg          = 0;     end
 if nargin < 5, constrain_mx = true;     end
 

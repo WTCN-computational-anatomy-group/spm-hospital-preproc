@@ -12,6 +12,8 @@ clear;
 % 2. MRI multi-channel
 % 3. MRI multi-channel w. labels
 % 4. CT
+% 5. Hospital MRI superres
+% 6. MRI single-channel with 2D version
 TESTCASE = 3;
 %----------------------
 
@@ -37,6 +39,14 @@ elseif TESTCASE == 3
 elseif TESTCASE == 4
     % CT
     Nii = nifti(fullfile('example-data','ct','3_s40271750-0004-00003-000001.nii'));
+elseif TESTCASE == 5      
+    % Hospital MRI superres
+    Nii = nifti(char({fullfile('example-data','mri-ts','1282601181791321211130956142_T1.nii'),...
+                      fullfile('example-data','mri-ts','1282601181791321211130956142_T2.nii'),...
+                      fullfile('example-data','mri-ts','1282601181791321211130956142_Flair.nii')}));
+elseif TESTCASE == 6
+    % MRI single-channel with 2D version
+    Nii = nifti(fullfile('example-data','mri-sc','0005-00001-000001-01.nii'));                  
 else
     error('Undefined test-case!')
 end
@@ -51,7 +61,6 @@ opt.do.real_mni = true;
 opt.do.coreg    = true;
 opt.do.denoise  = true;
 opt.do.crop     = true;
-opt.do.write2d  = true;
 opt.pth_mtv     = fullfile('/home','mbrud','dev','mbrud','code','matlab','MTV-preproc');
 if TESTCASE == 2 || TESTCASE == 3
     opt.do.reslice = true;
@@ -59,6 +68,14 @@ if TESTCASE == 2 || TESTCASE == 3
 end
 if TESTCASE == 4
     opt.do.res_orig = true;
+end
+if TESTCASE == 5
+    opt.do.superres = true;
+    opt.crop.neck   = true;
+end
+if TESTCASE == 6
+    opt.write2d.axis_2d = 3; % 1. Sagittal 2. Coronal 3. Axial
+    opt.do.write2d      = true;
 end
 % opt.do.denoise  = false;
 

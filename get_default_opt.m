@@ -5,11 +5,12 @@ if ~isfield(opt.do,'res_orig'), opt.do.res_orig = true;   end
 if ~isfield(opt.do,'real_mni'), opt.do.real_mni = true;   end
 if ~isfield(opt.do,'crop'),     opt.do.crop     = true;   end
 if ~isfield(opt.do,'coreg'),    opt.do.coreg    = true;   end
-if ~isfield(opt.do,'denoise'),  opt.do.denoise  = true;   end
+if ~isfield(opt.do,'denoise'),  opt.do.denoise  = false;  end
+if ~isfield(opt.do,'superres'), opt.do.superres = false;  end
 if ~isfield(opt.do,'reslice'),  opt.do.reslice  = true;   end
 if ~isfield(opt.do,'vx'),       opt.do.vx       = true;   end
-if ~isfield(opt.do,'write2d'),  opt.do.write2d  = true;   end
-if ~isfield(opt.do,'writemat'), opt.do.writemat = false;   end
+if ~isfield(opt.do,'write2d'),  opt.do.write2d  = false;  end
+if ~isfield(opt.do,'writemat'), opt.do.writemat = false;  end
 % Output directory
 if ~isfield(opt,'dir_out'),     opt.dir_out   = 'output';    end
 if ~isfield(opt,'dir_out2d'),   opt.dir_out2d = opt.dir_out; end
@@ -29,7 +30,7 @@ if ~isfield(opt.crop,'neck'),   opt.crop.neck = false;  end
 % 2D options
 if ~isfield(opt,'write2d'),         opt.write2d         = struct; end
 if ~isfield(opt.write2d,'deg'),     opt.write2d.deg     = 0;      end
-if ~isfield(opt.write2d,'axis_2d'), opt.write2d.axis_2d = 3;      end
+if ~isfield(opt.write2d,'axis_2d'), opt.write2d.axis_2d = 3;      end % 1. Sagittal 2. Coronal 3. Axial
 if ~isfield(opt.write2d,'sliceix'), opt.write2d.sliceix = [];     end
 % Path to denoising toolbox (https://github.com/WCHN/mtv-preproc)
 if ~isfield(opt,'pth_mtv'),     opt.pth_mtv   = '/home/mbrud/dev/mbrud/code/matlab/MTV-preproc'; end

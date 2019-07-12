@@ -27,7 +27,7 @@ end
 if nargin < 2, opt = struct; end
 opt = get_default_opt(opt);
 
-if opt.do.denoise
+if opt.do.denoise || opt.do.superres
     % Add denoising toolbox to path
     addpath(opt.pth_mtv)
 end
@@ -67,7 +67,7 @@ if opt.do.coreg
     Nii = coreg(Nii,opt.coreg.ref);
 end
 
-if opt.do.denoise
+if opt.do.denoise && ~opt.do.superres
     % Denoise
     Nii = denoise(Nii);
 
@@ -80,14 +80,24 @@ if opt.do.crop
     Nii = crop(Nii,opt.crop.neck);
 end
 
-if opt.do.vx
-    % Set same voxel size
-    Nii = resample_images(Nii,opt.vx.size,opt.vx.deg);
-end
+% The below steps are for creating images of equal size, either by MTV
+% super-resolution, or by just simply reslicing
+if opt.do.superres
+    % Super-resolve
+    Nii = superres(Nii);
+    
+    % Coreg (one more time after super-resolving)
+    Nii = coreg(Nii,opt.coreg.ref);
+else
+    if opt.do.vx
+        % Set same voxel size
+        Nii = resample_images(Nii,opt.vx.size,opt.vx.deg);
+    end
 
-if opt.do.reslice
-    % Make images same dimensions
-    Nii = reslice(Nii,opt.reslice.ref);
+    if opt.do.reslice
+        % Make images same dimensions
+        Nii = reslice(Nii,opt.reslice.ref);
+    end
 end
 
 if opt.do.write2d

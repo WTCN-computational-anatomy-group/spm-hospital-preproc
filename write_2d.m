@@ -6,11 +6,14 @@ if nargin < 5, sliceix    = [];   end
 fprintf('Writing 2D...')
 N = numel(Nii{1});
 for n=1:N
-    f           = Nii{1}(n).dat.fname;     
+    f           = Nii{1}(n).dat.fname;  
     [~,nam,ext] = fileparts(f);
-    nf          = fullfile(dir_out2d,['2d' nam ext]);
-    do_write(f,nf,deg,axis_2d,sliceix);    
-    Nii{1}(n)   = nifti(nf);
+    nf          = fullfile(dir_out2d,['2d' nam ext]);  
+    copyfile(f,nf);
+    nf          = nm_reorient(nf);
+    
+    nf        = do_write2d(nf,deg,axis_2d,sliceix);        
+    Nii{1}(n) = nifti(nf);
 end
 
 if numel(Nii) > 1
@@ -20,9 +23,12 @@ if numel(Nii) > 1
         
         f           = Nii{2}(n).dat.fname;  
         [~,nam,ext] = fileparts(f);
-        nf          = fullfile(dir_out2d,['2d' nam ext]);
-        do_write(f,nf,deg,axis_2d,sliceix);    
-        Nii{2}(n)   = nifti(nf);
+        nf          = fullfile(dir_out2d,['2d' nam ext]);  
+        copyfile(f,nf);
+        nf          = nm_reorient(nf);
+
+        nf        = do_write2d(nf,deg,axis_2d,sliceix);        
+        Nii{2}(n) = nifti(nf);
     end    
 end
 
@@ -41,10 +47,10 @@ fprintf('done!\n')
 %==========================================================================
 
 %==========================================================================
-function do_write(fname,ofname,deg,axis_2d,sliceix)
-if nargin < 3, deg      = 0;  end
-if nargin < 4, axis_2d  = 3;  end
-if nargin < 5, sliceix  = []; end
+function nfname = do_write2d(fname,deg,axis_2d,sliceix)
+if nargin < 2, deg      = 0;  end
+if nargin < 3, axis_2d  = 3;  end
+if nargin < 4, sliceix  = []; end
 
 % Create bounding box
 V  = spm_vol(fname);
@@ -67,11 +73,15 @@ elseif axis_2d == 3
 end                
 
 % Crop according to bounding-box
-subvol(V,bb',ofname,deg);      
+subvol(V,bb','sv',deg);      
 
+[pth,nam,ext] = fileparts(fname);
+nfname        = fullfile(pth,['sv' nam ext]);  
+delete(fname);
+    
 if axis_2d == 1 || axis_2d == 2
     % Make sure 1D plane is in z dimension
-    Nii  = nifti(ofname);
+    Nii  = nifti(nfname);
     mat  = Nii.mat;
     
     % Permute image data and apply permutation matrix to orientation matrix
@@ -86,7 +96,7 @@ if axis_2d == 1 || axis_2d == 2
     dm      = [size(img) 1];
     
     % Overwrite image data
-    VO             = spm_vol(ofname);
+    VO             = spm_vol(nfname);
     VO.dim(1:3)    = dm(1:3);        
     VO.mat         = mat;
     VO             = spm_create_vol(VO);        
