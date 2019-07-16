@@ -9,7 +9,7 @@ N = numel(Nii{1});
 for n=1:N         
     f             = Nii{1}(n).dat.fname;
     [pth,nam,ext] = fileparts(f);
-    nf            = fullfile(pth,['sr' nam ext]);
+    nf            = fullfile(pth,['srds' nam ext]);
     
     delete(f);
     Nii{1}(n) = nifti(nf);
@@ -19,16 +19,19 @@ fprintf('done!\n')
 
 %==========================================================================
 function do_superres(Nii,Verbose)
-CoRegister           = false;    
-WorkersParfor        = Inf;
-Method               = 'superres';
-RegScaleSuperResMRI  = 5;
-ReadWrite            = false;
-SliceGap             = 0;
-DecreasingReg        = true;
-IterMax              = 10;
-IterImage            = 3;
-    
+CoRegister          = false;    
+WorkersParfor       = Inf;
+Method              = 'superres';
+RegScaleSuperResMRI = 4;
+ReadWrite           = false;
+SliceGap            = 0;
+DecreasingReg       = true;
+IterMax             = 10;
+IterImage           = 3;
+
+pth             = fileparts(Nii(1).dat.fname);
+OutputDirectory = pth;
+
 fun_args = {'InputImages',Nii, ...
             'Method',Method, ...
             'Verbose',Verbose, ...
@@ -39,6 +42,7 @@ fun_args = {'InputImages',Nii, ...
             'DecreasingReg',DecreasingReg, ...
             'IterMax',IterMax, ...
             'WorkersParfor',WorkersParfor, ...
+            'OutputDirectory',OutputDirectory, ...
             'IterImage',IterImage};
             
 spm_mtv_preproc(fun_args{:});
