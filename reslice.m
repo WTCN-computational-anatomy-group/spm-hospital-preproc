@@ -44,7 +44,7 @@ matlabbatch{1}.spm.spatial.realign.write.data            = fnames;
 matlabbatch{1}.spm.spatial.realign.write.roptions.which  = [1 0];
 matlabbatch{1}.spm.spatial.realign.write.roptions.interp = deg;
 matlabbatch{1}.spm.spatial.realign.write.roptions.wrap   = [0 0 0];
-matlabbatch{1}.spm.spatial.realign.write.roptions.mask   = 0;
+matlabbatch{1}.spm.spatial.realign.write.roptions.mask   = 1;
 matlabbatch{1}.spm.spatial.realign.write.roptions.prefix = 'r';
 spm_jobman('run',matlabbatch);
 
