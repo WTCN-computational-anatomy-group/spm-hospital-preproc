@@ -87,3 +87,8 @@
 example-data/
 output/
 *~
+*.nii
+*.Nii
+*.csv
+
+TempData/
