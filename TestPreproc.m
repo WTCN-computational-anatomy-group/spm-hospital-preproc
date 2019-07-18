@@ -15,7 +15,7 @@ clear;
 % 4. CT
 % 5. Hospital MRI superres
 % 6. MRI single-channel with 2D version
-TESTCASE = 1;
+TESTCASE = 5;
 %----------------------
 
 if     TESTCASE == 1
@@ -42,9 +42,9 @@ elseif TESTCASE == 4
     Nii = nifti(fullfile('example-data','ct','3_s40271750-0004-00003-000001.nii'));
 elseif TESTCASE == 5      
     % Hospital MRI superres
-    Nii = nifti(char({fullfile('example-data','mri-ts','1282601181791321211130956142_T1.nii'),...
-                      fullfile('example-data','mri-ts','1282601181791321211130956142_T2.nii'),...
-                      fullfile('example-data','mri-ts','1282601181791321211130956142_Flair.nii')}));
+    Nii = nifti(char({fullfile('example-data','mri-ts','0002-00001-000021-01.nii'),...
+                      fullfile('example-data','mri-ts','0003-00001-000001-01.nii'),...
+                      fullfile('example-data','mri-ts','0004-00001-000001-01.nii')}));
 elseif TESTCASE == 6
     % MRI single-channel with 2D version
     Nii = nifti(fullfile('example-data','mri-sc','0005-00001-000001-01.nii'));                  
@@ -71,8 +71,11 @@ if TESTCASE == 4
     opt.do.res_orig = true;
 end
 if TESTCASE == 5
+    opt.do.denoise  = false;    
     opt.do.superres = true;
     opt.crop.neck   = true;
+%     opt.do.reslice = true;
+%     opt.do.vx      = true;        
 end
 if TESTCASE == 6
     opt.crop.neck       = true;
@@ -88,17 +91,19 @@ end
 
 out = RunPreproc(Nii,opt);
 
-%----------------------
-% Go back to native space orientation
-%----------------------
+if 0
+    %----------------------
+    % Go back to native space orientation
+    %----------------------
 
-C = numel(out.pth.im);
-for c=1:C    
-    Mc = spm_get_space(out.pth.im{c}); 
-    spm_get_space(out.pth.im{c},out.mat{c}*Mc); 
-    
-    if ~isempty(out.pth.lab{c})
-        Mc = spm_get_space(out.pth.lab{c}); 
-        spm_get_space(out.pth.lab{c},out.mat{c}*Mc); 
+    C = numel(out.pth.im);
+    for c=1:C    
+        Mc = spm_get_space(out.pth.im{c}); 
+        spm_get_space(out.pth.im{c},out.mat{c}*Mc); 
+
+        if ~isempty(out.pth.lab{c})
+            Mc = spm_get_space(out.pth.lab{c}); 
+            spm_get_space(out.pth.lab{c},out.mat{c}*Mc); 
+        end
     end
 end
