@@ -26,8 +26,9 @@ RegScaleSuperResMRI = 4;
 ReadWrite           = false;
 SliceGap            = 0;
 DecreasingReg       = true;
-IterMax             = 10;
+IterMax             = 12;
 IterImage           = 3;
+ZeroMissingValues   = false;
 
 pth             = fileparts(Nii(1).dat.fname);
 OutputDirectory = pth;
@@ -43,6 +44,7 @@ fun_args = {'InputImages',Nii, ...
             'IterMax',IterMax, ...
             'WorkersParfor',WorkersParfor, ...
             'OutputDirectory',OutputDirectory, ...
+            'ZeroMissingValues',ZeroMissingValues, ...
             'IterImage',IterImage};
             
 spm_mtv_preproc(fun_args{:});
