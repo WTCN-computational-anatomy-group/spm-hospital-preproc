@@ -84,7 +84,7 @@ end
 % super-resolution, or by just simply reslicing
 if opt.do.superres
     % Super-resolve
-    Nii = superres(Nii);
+    Nii = superres(Nii,opt.superres.ix);
     
     % Coreg (one more time after super-resolving)
     Nii = coreg(Nii,opt.coreg.ref);
@@ -106,6 +106,7 @@ if opt.do.write2d
 end
 
 % Allocate output
+C             = numel(Nii{1});
 out           = struct;
 out.pth.im    = cell(1,C);
 out.pth.im2d  = cell(1,C);

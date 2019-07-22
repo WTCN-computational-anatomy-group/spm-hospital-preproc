@@ -17,6 +17,9 @@ if ~isfield(opt,'dir_out2d'),   opt.dir_out2d = opt.dir_out; end
 % coreg options
 if ~isfield(opt,'coreg'),       opt.coreg     = struct; end
 if ~isfield(opt.coreg,'ref'),   opt.coreg.ref = 1;      end
+% superres options
+if ~isfield(opt,'superres'),    opt.superres    = struct; end
+if ~isfield(opt.superres,'ix'), opt.superres.ix = [];     end
 % Reslice options
 if ~isfield(opt,'reslice'),     opt.reslice     = struct; end
 if ~isfield(opt.reslice,'ref'), opt.reslice.ref = 1;      end

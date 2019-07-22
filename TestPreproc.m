@@ -15,7 +15,8 @@ clear;
 % 4. CT
 % 5. Hospital MRI superres
 % 6. MRI single-channel with 2D version
-TESTCASE = 5;
+% 7. MRI super-res with cell array input
+TESTCASE = 7;
 %----------------------
 
 if     TESTCASE == 1
@@ -48,9 +49,14 @@ elseif TESTCASE == 5
 elseif TESTCASE == 6
     % MRI single-channel with 2D version
     Nii = nifti(fullfile('example-data','mri-sc','0005-00001-000001-01.nii'));                  
+elseif TESTCASE == 7
+    % MRI super-res with cell array input
+    ix  = [1 2 1 2 3];
+    Nii = nifti(spm_select('FPList','/home/mbrud/dev/mbrud/code/matlab/Patient-Preprocessing/example-data/BrainWebManyN/','^.*\.nii$'));
 else
     error('Undefined test-case!')
 end
+
 
 %----------------------
 % Set preprocessing options
@@ -70,10 +76,13 @@ end
 if TESTCASE == 4
     opt.do.res_orig = true;
 end
-if TESTCASE == 5
+if TESTCASE == 5 || TESTCASE == 7
     opt.do.denoise  = false;    
     opt.do.superres = true;
     opt.crop.neck   = true;
+    if TESTCASE == 7
+        opt.superres.ix = ix;
+    end
 %     opt.do.reslice = true;
 %     opt.do.vx      = true;        
 end

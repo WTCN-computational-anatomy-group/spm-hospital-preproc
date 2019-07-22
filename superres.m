@@ -1,36 +1,63 @@
-function Nii = superres(Nii,Verbose)
-if nargin < 2, Verbose = 0;     end
+function Nii = superres(Nii,ix,Verbose)
+if nargin < 2, ix      = []; end
+if nargin < 3, Verbose = 1;  end
 
 fprintf('Super-resolving...')
 
-do_superres(Nii{1},Verbose);
-
-N = numel(Nii{1});
-for n=1:N         
-    f             = Nii{1}(n).dat.fname;
-    [pth,nam,ext] = fileparts(f);
-    nf            = fullfile(pth,['srds' nam ext]);
+if ~isempty(ix)
+    % Multiple observations of one, or multiple, channels. Make sure input
+    % is correctly formated
+    C   = numel(unique(ix));    
+    tmp = cell(1,C);
+    for c=1:C
+        tmp{c} = Nii{1}(ix == c);
+    end
     
-    delete(f);
-    Nii{1}(n) = nifti(nf);
+    oNii = do_superres(tmp,Verbose);
+    
+    N = numel(Nii{1});
+    for n=1:N         
+        f = Nii{1}(n).dat.fname;
+        delete(f);
+    end
+    
+    Nii{1} = oNii;
+else
+    % One observation of each channels
+    do_superres(Nii{1},Verbose);
+    
+    N = numel(Nii{1});
+    for n=1:N         
+        f             = Nii{1}(n).dat.fname;
+        [pth,nam,ext] = fileparts(f);
+        nf            = fullfile(pth,['srds' nam ext]);
+
+        delete(f);
+        Nii{1}(n) = nifti(nf);
+    end
 end
+
 fprintf('done!\n')
 %==========================================================================
 
 %==========================================================================
-function do_superres(Nii,Verbose)
+function oNii = do_superres(Nii,Verbose)
 CoRegister          = false;    
 WorkersParfor       = Inf;
 Method              = 'superres';
-RegScaleSuperResMRI = 4;
+RegScaleSuperResMRI = 5;
 ReadWrite           = false;
 SliceGap            = 0;
 DecreasingReg       = true;
-IterMax             = 12;
-IterImage           = 3;
+IterMax             = 50;
+IterImage           = 12;
 ZeroMissingValues   = false;
 
-pth             = fileparts(Nii(1).dat.fname);
+if iscell(Nii)
+    pth = fileparts(Nii{1}(1).dat.fname);
+else
+    pth = fileparts(Nii(1).dat.fname);
+end
 OutputDirectory = pth;
 
 fun_args = {'InputImages',Nii, ...
@@ -47,5 +74,5 @@ fun_args = {'InputImages',Nii, ...
             'ZeroMissingValues',ZeroMissingValues, ...
             'IterImage',IterImage};
             
-spm_mtv_preproc(fun_args{:});
+oNii = spm_mtv_preproc(fun_args{:});
 %==========================================================================
