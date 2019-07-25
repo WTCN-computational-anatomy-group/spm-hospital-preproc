@@ -1,4 +1,7 @@
-function Nii = coreg(Nii,ref_ix)
+function Nii = coreg(Nii,opt)
+
+ref_ix = opt.ref;
+
 N = numel(Nii{1});
 if N==1
     return;

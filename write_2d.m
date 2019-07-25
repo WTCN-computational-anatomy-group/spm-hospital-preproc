@@ -1,7 +1,8 @@
-function [Nii,P] = write_2d(Nii,dir_out2d,deg,axis_2d,sliceix)
-if nargin < 3, deg      = 0;    end
-if nargin < 4, axis_2d  = 3;    end
-if nargin < 5, sliceix    = [];   end
+function [Nii,P] = write_2d(Nii,dir_out2d,opt)
+
+deg     = opt.deg;
+axis_2d = opt.axis_2d;
+sliceix = opt.sliceix;
 
 fprintf('Writing 2D...')
 N = numel(Nii{1});

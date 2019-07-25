@@ -1,6 +1,7 @@
-function Nii = reslice(Nii,ref_ix,deg)
-if nargin < 2, ref_ix = 1; end
-if nargin < 3, deg    = 4; end
+function Nii = reslice(Nii,opt)
+
+ref_ix = opt.ref;
+deg    = opt.deg;
 
 N = numel(Nii{1});
 if N == 1

@@ -70,7 +70,7 @@ opt.do.coreg    = true;
 opt.do.denoise  = true;
 opt.do.crop     = true;
 opt.pth_mtv     = fullfile('/home','mbrud','dev','mbrud','code','matlab','MTV-preproc');
-opt.dir_out     = 'output-res';
+opt.dir_out     = 'output';
 if TESTCASE == 2 || TESTCASE == 3
     opt.do.reslice = true;
     opt.do.vx      = true;
@@ -100,6 +100,7 @@ if TESTCASE == 6
 end
 % opt.do.write2d = true;
 % opt.do.denoise = false;
+opt.do.segment = true;
 
 %----------------------
 % Do preprocessing

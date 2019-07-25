@@ -1,6 +1,7 @@
-function Nii = superres(Nii,ix,Verbose)
-if nargin < 2, ix      = []; end
-if nargin < 3, Verbose = 1;  end
+function Nii = superres(Nii,opt)
+
+ix      = opt.ix;
+Verbose = opt.Verbose;
 
 fprintf('Super-resolving...')
 

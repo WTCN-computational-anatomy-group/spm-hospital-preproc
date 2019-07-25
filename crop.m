@@ -1,5 +1,6 @@
-function Nii = crop(Nii,rem_neck)
-if nargin < 2, rem_neck = true; end
+function Nii = crop(Nii,opt)
+
+rem_neck = opt.neck;
 
 fprintf('Cropping...')
 N        = numel(Nii{1});

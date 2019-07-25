@@ -1,6 +1,7 @@
-function Nii = resample_images(Nii,vx,deg)
-if nargin < 2, vx  = 1; end
-if nargin < 3, deg = 4; end
+function Nii = resample_images(Nii,opt)
+
+vx  = opt.size;
+deg = opt.deg;
 
 fprintf('Changing voxel-sizes...')
 N = numel(Nii{1});

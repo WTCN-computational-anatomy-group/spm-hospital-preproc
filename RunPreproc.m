@@ -64,7 +64,7 @@ end
 
 if opt.do.coreg
     % Coreg
-    Nii = coreg(Nii,opt.coreg.ref);
+    Nii = coreg(Nii,opt.coreg);
 end
 
 if opt.do.denoise && ~opt.do.superres
@@ -72,37 +72,42 @@ if opt.do.denoise && ~opt.do.superres
     Nii = denoise(Nii);
 
     % Coreg (one more time after denoising)
-    Nii = coreg(Nii,opt.coreg.ref);
+    Nii = coreg(Nii,opt.coreg);
 end
 
 if opt.do.crop
     % Remove uneccesary data
-    Nii = crop(Nii,opt.crop.neck);
+    Nii = crop(Nii,opt.crop);
 end
 
 % The below steps are for creating images of equal size, either by MTV
 % super-resolution, or by just simply reslicing
 if opt.do.superres
     % Super-resolve
-    Nii = superres(Nii,opt.superres.ix);
+    Nii = superres(Nii,opt.superres);
     
     % Coreg (one more time after super-resolving)
-    Nii = coreg(Nii,opt.coreg.ref);
+    Nii = coreg(Nii,opt.coreg);
 else
     if opt.do.vx
         % Set same voxel size
-        Nii = resample_images(Nii,opt.vx.size,opt.vx.deg);
+        Nii = resample_images(Nii,opt.vx);
     end
 
     if opt.do.reslice
         % Make images same dimensions
-        Nii = reslice(Nii,opt.reslice.ref);
+        Nii = reslice(Nii,opt.reslice);
     end
+end
+
+if opt.do.segment
+    % Run SPM12 segmentation
+    Seg_pths = segment_preproc8(Nii,opt.segment);
 end
 
 if opt.do.write2d
     % Write 2D versions
-    [~,P2d] = write_2d(Nii,opt.dir_out2d,opt.write2d.deg,opt.write2d.axis_2d,opt.write2d.sliceix);
+    [~,P2d] = write_2d(Nii,opt.dir_out2d,opt.write2d);
 end
 
 % Allocate output
@@ -112,6 +117,7 @@ out.pth.im    = cell(1,C);
 out.pth.im2d  = cell(1,C);
 out.pth.lab   = cell(1,C);
 out.pth.lab2d = cell(1,C);
+out.pth.seg   = []; 
 out.mat       = cell(1,C);
 for i=1:2
     for c=1:C
@@ -123,6 +129,10 @@ for i=1:2
             out.pth.lab{c} = Nii{i}(c).dat.fname;
         end
                             
+        if exist('Seg_pths','var')
+            out.pth.seg = Seg_pths;
+        end
+                
         if exist('P2d','var')
             if i == 1
                 out.pth.im2d{c}  = P2d{i}{c};
@@ -130,7 +140,7 @@ for i=1:2
                 out.pth.lab2d{c} = P2d{i}{c};
             end
         end
-                   
+        
         if opt.do.writemat
             [pth,nam] = fileparts(P{i}{c});   
             nP        = fullfile(pth,['mat' nam '.mat']);
