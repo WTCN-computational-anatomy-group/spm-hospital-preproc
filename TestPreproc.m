@@ -16,7 +16,7 @@ clear;
 % 5. Hospital MRI superres
 % 6. MRI single-channel with 2D version
 % 7. MRI super-res with cell array input
-TESTCASE = 7;
+TESTCASE = 5;
 %----------------------
 
 if     TESTCASE == 1
@@ -43,9 +43,10 @@ elseif TESTCASE == 4
     Nii = nifti(fullfile('example-data','ct','3_s40271750-0004-00003-000001.nii'));
 elseif TESTCASE == 5      
     % Hospital MRI superres
-    Nii = nifti(char({fullfile('example-data','mri-ts','0002-00001-000021-01.nii'),...
-                      fullfile('example-data','mri-ts','0003-00001-000001-01.nii'),...
-                      fullfile('example-data','mri-ts','0004-00001-000001-01.nii')}));
+    Nii = nifti(char({fullfile('example-data','t1t2flair-ts','1282601181791321211151569788_Flair.nii'),...
+                      fullfile('example-data','t1t2flair-ts','1282601181791321211151569788_T1.nii'),...
+                      fullfile('example-data','t1t2flair-ts','1282601181791321211151569788_T2.nii')}));
+%     Nii = nifti(spm_select('FPList', '/home/mbrud/dev/mbrud/code/matlab/Patient-Preprocessing/example-data/mo','^.*\.nii$'));
 elseif TESTCASE == 6
     % MRI single-channel with 2D version
     Nii = nifti(fullfile('example-data','mri-sc','0005-00001-000001-01.nii'));                  
@@ -69,6 +70,7 @@ opt.do.coreg    = true;
 opt.do.denoise  = true;
 opt.do.crop     = true;
 opt.pth_mtv     = fullfile('/home','mbrud','dev','mbrud','code','matlab','MTV-preproc');
+opt.dir_out     = 'output-res';
 if TESTCASE == 2 || TESTCASE == 3
     opt.do.reslice = true;
     opt.do.vx      = true;
@@ -77,14 +79,19 @@ if TESTCASE == 4
     opt.do.res_orig = true;
 end
 if TESTCASE == 5 || TESTCASE == 7
-    opt.do.denoise  = false;    
-    opt.do.superres = true;
-    opt.crop.neck   = true;
-    if TESTCASE == 7
-        opt.superres.ix = ix;
+    opt.do.denoise  = false;   
+    if 0
+        % superres
+        opt.do.superres = true;
+        opt.crop.neck   = true;
+        if TESTCASE == 7
+            opt.superres.ix = ix;
+        end
+    else
+        % just reslice
+        opt.do.reslice = true;
+        opt.do.vx      = true;        
     end
-%     opt.do.reslice = true;
-%     opt.do.vx      = true;        
 end
 if TESTCASE == 6
     opt.crop.neck       = true;
