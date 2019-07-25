@@ -49,8 +49,8 @@ RegScaleSuperResMRI = 5;
 ReadWrite           = false;
 SliceGap            = 0;
 DecreasingReg       = true;
-IterMax             = 50;
-IterImage           = 12;
+IterMax             = 12;
+IterImage           = 3;
 ZeroMissingValues   = false;
 
 if iscell(Nii)
