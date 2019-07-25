@@ -92,3 +92,7 @@ output/
 *.csv
 
 TempData/
+
+DemoScriptJames\.m
+
+DemoScriptMo\.m
