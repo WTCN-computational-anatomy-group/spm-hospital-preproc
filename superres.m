@@ -31,7 +31,7 @@ else
     for n=1:N         
         f             = Nii{1}(n).dat.fname;
         [pth,nam,ext] = fileparts(f);
-        nf            = fullfile(pth,['srds' nam ext]);
+        nf            = fullfile(pth,['srdscpy' nam ext]);
 
         delete(f);
         Nii{1}(n) = nifti(nf);
@@ -46,7 +46,7 @@ function oNii = do_superres(Nii,Verbose)
 CoRegister          = false;    
 WorkersParfor       = Inf;
 Method              = 'superres';
-RegScaleSuperResMRI = 5;
+RegScaleSuperResMRI = 4;
 ReadWrite           = false;
 SliceGap            = 0;
 DecreasingReg       = true;

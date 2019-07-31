@@ -8,119 +8,127 @@
 clear;
 
 %----------------------
-% Pick a test-case
-% 1. MRI single-channel
-% 2. MRI multi-channel
-% 3. MRI multi-channel w. labels
-% 4. CT
-% 5. Hospital MRI superres
-% 6. MRI single-channel with 2D version
-% 7. MRI super-res with cell array input
-TESTCASE = 5;
+% TODO
+% Skull-strip
+% Warp intensity image
+% Write 2D segmentations
 %----------------------
 
+%----------------------
+% Pick a test-case:
+% 1. MRI single-channel with 2D version
+% 2. MRI multi-channel with labels
+% 3. CT w. labels
+% 4. Hospital MRI superres
+% 5. MRI super-res with cell array input
+% 6. MRI super-res with more than one subject
+%----------------------
+
+TESTCASE = 1;
+DirInOut = ['TESTCASE-' num2str(TESTCASE)];
+
+% Options to the preprocessing code
+opt         = struct;
+opt.pth_mtv = fullfile('/home','mbrud','dev','mbrud','code','matlab','MTV-preproc');
+opt.dir_out = fullfile('output',DirInOut);   
+if exist(opt.dir_out,'dir') == 7    
+    rmdir(opt.dir_out,'s');
+end
+
+% Define input(s) and test-case specific options
+dat = struct;
 if     TESTCASE == 1
     % MRI single-channel
-    Nii = nifti(fullfile('example-data','mri-sc','0005-00001-000001-01.nii'));
+    dat.Nii = nifti(fullfile('example-data',DirInOut,'c0003s0008t01.nii'));
+    
+    % Options    
+    opt.do.real_mni     = true;        
+    opt.do.crop         = true;   
+    opt.crop.neck       = true;
+    opt.do.denoise      = true;
+    opt.write2d.axis_2d = 3;      % 1. Sagittal 2. Coronal 3. Axial
+    opt.do.write2d      = true;
 elseif TESTCASE == 2        
-    % MRI multi-channel
-    Nii = nifti(char({fullfile('example-data','mri-mc','1282601181791321211150584332_T1.nii'),...
-                      fullfile('example-data','mri-mc','1282601181791321211150584332_T2.nii'),...
-                      fullfile('example-data','mri-mc','1282601181791321211150584332_Flair.nii')}));
-elseif TESTCASE == 3
     % MRI multi-channel w. labels
-    Nii       = cell(1,2);
-    Nii{1}    = nifti;
-    Nii{1}(1) = nifti(fullfile('example-data','labels','1-T1.nii'));
-    Nii{1}(2) = nifti(fullfile('example-data','labels','1-FLAIR.nii'));    
-    Nii{1}(3) = nifti(fullfile('example-data','labels','1-IR.nii'));    
-    Nii{2}    = nifti; % Map label image to intensity image it was annotated on
-    Nii{2}(1) = nifti;
-    Nii{2}(2) = nifti(fullfile('example-data','labels','1-segm.nii'));
-    Nii{2}(3) = nifti;
-elseif TESTCASE == 4
-    % CT
-    Nii = nifti(fullfile('example-data','ct','3_s40271750-0004-00003-000001.nii'));
-elseif TESTCASE == 5      
-    % Hospital MRI superres
-    Nii = nifti(char({fullfile('example-data','t1t2flair-ts','1282601181791321211151569788_Flair.nii'),...
-                      fullfile('example-data','t1t2flair-ts','1282601181791321211151569788_T1.nii'),...
-                      fullfile('example-data','t1t2flair-ts','1282601181791321211151569788_T2.nii')}));
-%     Nii = nifti(spm_select('FPList', '/home/mbrud/dev/mbrud/code/matlab/Patient-Preprocessing/example-data/mo','^.*\.nii$'));
+    dat.Nii       = cell(1,2);
+    dat.Nii{1}    = nifti;
+    dat.Nii{1}(1) = nifti(fullfile('example-data',DirInOut,'1-T1.nii'));
+    dat.Nii{1}(2) = nifti(fullfile('example-data',DirInOut,'1-FLAIR.nii'));    
+    dat.Nii{1}(3) = nifti(fullfile('example-data',DirInOut,'1-IR.nii'));    
+    dat.Nii{2}    = nifti; % Map label image to intensity image it was annotated on
+    dat.Nii{2}(1) = nifti;
+    dat.Nii{2}(2) = nifti(fullfile('example-data',DirInOut,'1-segm.nii'));
+    dat.Nii{2}(3) = nifti;
+    
+    % Options     
+    opt.do.real_mni = true;        
+    opt.do.crop     = true; 
+    opt.do.reslice  = true;
+    opt.reslice.ref = 1;
+    opt.do.vx       = true;        
+elseif TESTCASE == 3
+    % CT w. labels
+    dat.Nii    = cell(1,2);
+    dat.Nii{1} = nifti(fullfile('example-data',DirInOut,'sCROMIS2ICH_01006-0004-00002-000001.nii'));
+    dat.Nii{2} = nifti(fullfile('example-data',DirInOut,'sCROMIS2ICH_01006-0004-00002-000001_smask.nii'));
+    
+    % Options     
+    opt.do.res_orig = true;
+    opt.do.real_mni = true;        
+    opt.do.crop     = true;     
+    opt.crop.neck   = true;
+    opt.do.vx       = true; 
+    opt.vx.size     = 1;                
+elseif TESTCASE == 4      
+    % Hospital MRI superres    
+    dat.Nii    = nifti; 
+    dat.Nii(1) = nifti(fullfile('example-data',DirInOut,'0002-00001-000021-01.nii'));
+    dat.Nii(2) = nifti(fullfile('example-data',DirInOut,'0003-00001-000001-01.nii'));    
+    dat.Nii(3) = nifti(fullfile('example-data',DirInOut,'0004-00001-000001-01.nii'));        
+    
+    % Options     
+    opt.do.real_mni = true;        
+    opt.do.crop     = true; 
+    opt.crop.neck   = true;
+    opt.do.superres = true;        
+elseif TESTCASE == 5
+    % MRI super-res with cell array input    
+    dat.Nii = nifti(spm_select('FPList',fullfile('example-data',DirInOut),'^.*\.nii$'));
+        
+    % Options     
+    opt.do.real_mni = true;        
+    opt.do.crop     = true; 
+    opt.crop.neck   = true;
+    opt.do.superres = true;       
+    opt.superres.ix = [1 2 1 2 3];
 elseif TESTCASE == 6
-    % MRI single-channel with 2D version
-    Nii = nifti(fullfile('example-data','mri-sc','0005-00001-000001-01.nii'));                  
-elseif TESTCASE == 7
-    % MRI super-res with cell array input
-    ix  = [1 2 1 2 3];
-    Nii = nifti(spm_select('FPList','/home/mbrud/dev/mbrud/code/matlab/Patient-Preprocessing/example-data/BrainWebManyN/','^.*\.nii$'));
+    % Hospital MRI superres w. more than one subject
+    dat(1).Nii    = nifti; 
+    dat(1).Nii(1) = nifti(fullfile('example-data',DirInOut,'1282601181791321211130022749_Flair.nii'));
+    dat(1).Nii(2) = nifti(fullfile('example-data',DirInOut,'1282601181791321211130022749_T1.nii'));    
+    dat(1).Nii(3) = nifti(fullfile('example-data',DirInOut,'1282601181791321211130022749_T2.nii'));        
+    dat(2).Nii    = nifti; 
+    dat(2).Nii(1) = nifti(fullfile('example-data',DirInOut,'1282601181791321211130083960_Flair.nii'));
+    dat(2).Nii(2) = nifti(fullfile('example-data',DirInOut,'1282601181791321211130083960_T1.nii'));    
+    dat(2).Nii(3) = nifti(fullfile('example-data',DirInOut,'1282601181791321211130083960_T2.nii'));            
+    
+    % Options     
+    opt.do.real_mni = true;        
+    opt.do.crop     = true; 
+    opt.crop.neck   = true;
+    opt.do.superres = true;       
 else
     error('Undefined test-case!')
 end
-
-
-%----------------------
-% Set preprocessing options
-%----------------------
-
-opt.do.vx       = false;
-opt.do.res_orig = false;
-opt.do.real_mni = true;
-opt.do.coreg    = true;
-opt.do.denoise  = true;
-opt.do.crop     = true;
-opt.pth_mtv     = fullfile('/home','mbrud','dev','mbrud','code','matlab','MTV-preproc');
-opt.dir_out     = 'output';
-if TESTCASE == 2 || TESTCASE == 3
-    opt.do.reslice = true;
-    opt.do.vx      = true;
-end
-if TESTCASE == 4
-    opt.do.res_orig = true;
-end
-if TESTCASE == 5 || TESTCASE == 7
-    opt.do.denoise  = false;   
-    if 0
-        % superres
-        opt.do.superres = true;
-        opt.crop.neck   = true;
-        if TESTCASE == 7
-            opt.superres.ix = ix;
-        end
-    else
-        % just reslice
-        opt.do.reslice = true;
-        opt.do.vx      = true;        
-    end
-end
-if TESTCASE == 6
-    opt.crop.neck       = true;
-    opt.write2d.axis_2d = 3; % 1. Sagittal 2. Coronal 3. Axial
-    opt.do.write2d      = true;
-end
-% opt.do.write2d = true;
-% opt.do.denoise = false;
-opt.do.segment = true;
 
 %----------------------
 % Do preprocessing
 %----------------------
 
-out = RunPreproc(Nii,opt);
+for s=1:numel(dat) % loop over subjects
+    % Run preprocessing
+    out = RunPreproc(dat(s).Nii,opt);
 
-if 0
-    %----------------------
     % Go back to native space orientation
-    %----------------------
-
-    C = numel(out.pth.im);
-    for c=1:C    
-        Mc = spm_get_space(out.pth.im{c}); 
-        spm_get_space(out.pth.im{c},out.mat{c}*Mc); 
-
-        if ~isempty(out.pth.lab{c})
-            Mc = spm_get_space(out.pth.lab{c}); 
-            spm_get_space(out.pth.lab{c},out.mat{c}*Mc); 
-        end
-    end
+    go2native(out);
 end

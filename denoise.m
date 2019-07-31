@@ -18,7 +18,7 @@ fprintf('done!\n')
 
 %==========================================================================
 function do_denoise(Nii,Verbose)
-RegScaleDenoisingMRI = 5;
+RegScaleDenoisingMRI = 4;
 CoRegister           = false;    
 WorkersParfor        = 0;
 

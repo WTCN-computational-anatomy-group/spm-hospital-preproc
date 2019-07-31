@@ -1,33 +1,40 @@
-function Nii = reslice(Nii,opt)
+function [Nii,M] = reslice(Nii,M,opt)
 
 ref_ix = opt.ref;
 deg    = opt.deg;
 
 N = numel(Nii{1});
-if N == 1
-    return
-end
+if N > 1    
+    fprintf('Reslicing images...')
 
-fprintf('Reslicing...')
+    ixs       = 1:N;
+    source_ix = ixs(ixs ~= ref_ix);
 
-ixs       = 1:N;
-source_ix = ixs(ixs ~= ref_ix);
+    % Use SPM batch job to reslice
+    fnames = {Nii{1}(ref_ix).dat.fname, Nii{1}(source_ix).dat.fname}';
+    run_reslice(fnames,deg);
 
-% Use SPM batch job to reslice
-fnames = {Nii{1}(ref_ix).dat.fname, Nii{1}(source_ix).dat.fname}';
-run_reslice(fnames,deg);
+    % Update M
+    for n=source_ix
+        M{n} = M{ref_ix};
+    end
 
-% Update NIIs
-for n=source_ix
-    f             = Nii{1}(n).dat.fname;
-    [pth,nam,ext] = fileparts(f);
-    nf            = fullfile(pth,['r' nam ext]);
+    % Update NIIs
+    for n=source_ix
+        f             = Nii{1}(n).dat.fname;
+        [pth,nam,ext] = fileparts(f);
+        nf            = fullfile(pth,['r' nam ext]);
+
+        delete(f);
+        Nii{1}(n) = nifti(nf);
+    end
     
-    delete(f);
-    Nii{1}(n) = nifti(nf);
+    fprintf('done!\n')
 end
 
 if numel(Nii) > 1
+    fprintf('Reslicing labels...')
+    
     % Reslice labels too
     V = spm_vol(Nii{1}(ref_ix).dat.fname);
     for n=1:N
@@ -35,8 +42,9 @@ if numel(Nii) > 1
         
         Nii{2}(n) = reslice_labels(V,Nii{2}(n));
     end    
+    
+    fprintf('done!\n')
 end
-fprintf('done!\n')
 %==========================================================================
 
 %==========================================================================
@@ -45,7 +53,7 @@ matlabbatch{1}.spm.spatial.realign.write.data            = fnames;
 matlabbatch{1}.spm.spatial.realign.write.roptions.which  = [1 0];
 matlabbatch{1}.spm.spatial.realign.write.roptions.interp = deg;
 matlabbatch{1}.spm.spatial.realign.write.roptions.wrap   = [0 0 0];
-matlabbatch{1}.spm.spatial.realign.write.roptions.mask   = 1;
+matlabbatch{1}.spm.spatial.realign.write.roptions.mask   = 0;
 matlabbatch{1}.spm.spatial.realign.write.roptions.prefix = 'r';
 spm_jobman('run',matlabbatch);
 

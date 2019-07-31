@@ -94,9 +94,9 @@ else
         Nii = resample_images(Nii,opt.vx);
     end
 
-    if opt.do.reslice
+    if opt.do.reslice || (opt.do.vx && numel(Nii) > 1)
         % Make images same dimensions
-        Nii = reslice(Nii,opt.reslice);
+        [Nii,M] = reslice(Nii,M,opt.reslice);
     end
 end
 
@@ -117,7 +117,7 @@ out.pth.im    = cell(1,C);
 out.pth.im2d  = cell(1,C);
 out.pth.lab   = cell(1,C);
 out.pth.lab2d = cell(1,C);
-out.pth.seg   = []; 
+out.pth.seg   = {}; 
 out.mat       = cell(1,C);
 for i=1:2
     for c=1:C

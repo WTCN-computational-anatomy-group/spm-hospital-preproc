@@ -86,6 +86,9 @@ prefix = {'c','rc','wc','mwc'};
 for i=1:numel(prefix)
     files   = spm_select('List',dir_out,['^' prefix{i} '.*\.nii$']);
     pths{i} = cellstr(files);
+    for i1=1:numel(pths{i})
+        pths{i}{i1} = fullfile(dir_out,pths{i}{i1});        
+    end
 end
 
 fprintf('done!\n')

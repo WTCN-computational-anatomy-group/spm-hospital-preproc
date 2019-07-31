@@ -1,14 +1,14 @@
 function opt = get_default_opt(opt)
 % Do
 if ~isfield(opt,'do'),          opt.do          = struct; end
-if ~isfield(opt.do,'res_orig'), opt.do.res_orig = true;   end
-if ~isfield(opt.do,'real_mni'), opt.do.real_mni = true;   end
-if ~isfield(opt.do,'crop'),     opt.do.crop     = true;   end
-if ~isfield(opt.do,'coreg'),    opt.do.coreg    = true;   end
+if ~isfield(opt.do,'res_orig'), opt.do.res_orig = false;  end
+if ~isfield(opt.do,'real_mni'), opt.do.real_mni = false;  end
+if ~isfield(opt.do,'crop'),     opt.do.crop     = false;  end
+if ~isfield(opt.do,'coreg'),    opt.do.coreg    = false;  end
 if ~isfield(opt.do,'denoise'),  opt.do.denoise  = false;  end
 if ~isfield(opt.do,'superres'), opt.do.superres = false;  end
-if ~isfield(opt.do,'reslice'),  opt.do.reslice  = true;   end
-if ~isfield(opt.do,'vx'),       opt.do.vx       = true;   end
+if ~isfield(opt.do,'reslice'),  opt.do.reslice  = false;  end
+if ~isfield(opt.do,'vx'),       opt.do.vx       = false;  end
 if ~isfield(opt.do,'write2d'),  opt.do.write2d  = false;  end
 if ~isfield(opt.do,'writemat'), opt.do.writemat = false;  end
 if ~isfield(opt.do,'segment'),  opt.do.segment  = false;  end
@@ -19,9 +19,9 @@ if ~isfield(opt,'dir_out2d'),   opt.dir_out2d = opt.dir_out; end
 if ~isfield(opt,'coreg'),       opt.coreg     = struct; end
 if ~isfield(opt.coreg,'ref'),   opt.coreg.ref = 1;      end
 % superres options
-if ~isfield(opt,'superres'),         opt.superres    = struct; end
-if ~isfield(opt.superres,'ix'),      opt.superres.ix = [];     end
-if ~isfield(opt.superres,'Verbose'), opt.superres.Verbose = 1;     end
+if ~isfield(opt,'superres'),         opt.superres         = struct; end
+if ~isfield(opt.superres,'ix'),      opt.superres.ix      = [];     end
+if ~isfield(opt.superres,'Verbose'), opt.superres.Verbose = 0;      end
 % Reslice options
 if ~isfield(opt,'reslice'),     opt.reslice     = struct; end
 if ~isfield(opt.reslice,'ref'), opt.reslice.ref = 1;      end

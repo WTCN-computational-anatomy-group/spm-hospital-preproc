@@ -20,7 +20,7 @@ if numel(Nii) > 1
         if isempty(Nii{2}(n).dat), continue; end
         
         f = Nii{2}(n).dat.fname;    
-        f = nm_reorient(f,vx);
+        f = nm_reorient(f,vx,'ro',0);
         do_reset_origin(f);
 
         Nii{2}(n) = nifti(f);
