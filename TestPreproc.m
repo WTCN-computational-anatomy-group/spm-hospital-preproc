@@ -24,7 +24,7 @@ clear;
 % 6. MRI super-res with more than one subject
 %----------------------
 
-TESTCASE = 1;
+TESTCASE = 2;
 DirInOut = ['TESTCASE-' num2str(TESTCASE)];
 
 % Options to the preprocessing code
@@ -65,7 +65,8 @@ elseif TESTCASE == 2
     opt.do.crop     = true; 
     opt.do.reslice  = true;
     opt.reslice.ref = 1;
-    opt.do.vx       = true;        
+    opt.do.vx       = true;  
+    opt.labels.part = {[1],[2],[3 4],[5],[6],[7],[8]};
 elseif TESTCASE == 3
     % CT w. labels
     dat.Nii    = cell(1,2);

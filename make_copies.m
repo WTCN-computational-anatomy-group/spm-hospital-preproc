@@ -14,6 +14,8 @@ for n=1:N
         
     nf                  = fullfile(DirOut,[nam ext]);
     Nii{1}(n).dat.fname = nf;
+    
+    Nii{1}(n).dat.permission = 'rw';
 end
 
 if numel(Nii) > 1
@@ -27,6 +29,8 @@ if numel(Nii) > 1
         [~,nam,ext]         = fileparts(f);
         nf                  = fullfile(DirOut,[nam ext]);
         Nii{2}(n).dat.fname = nf;
+        
+        Nii{2}(n).dat.permission = 'rw';
     end    
 end
 fprintf('done!\n')

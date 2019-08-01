@@ -50,6 +50,11 @@ opt.dir_out = s.path;
 % Copy (so to not overwrite originals)
 Nii = make_copies(Nii,opt.dir_out);
 
+if numel(Nii) > 1
+    % Collapse labels
+    Nii = collapse_labels(Nii,opt.labels.part);    
+end
+
 M    = cell(1,C);
 M(:) = {eye(4)};
 if opt.do.res_orig
@@ -94,10 +99,15 @@ else
         Nii = resample_images(Nii,opt.vx);
     end
 
-    if opt.do.reslice || (opt.do.vx && numel(Nii) > 1)
+    if opt.do.reslice
         % Make images same dimensions
-        [Nii,M] = reslice(Nii,M,opt.reslice);
+        [Nii,M] = reslice_images(Nii,M,opt.reslice);
     end
+end
+
+if numel(Nii) > 1
+    % Reslice labels
+    Nii = reslice_labels(Nii,opt.reslice);
 end
 
 if opt.do.segment

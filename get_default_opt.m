@@ -15,6 +15,9 @@ if ~isfield(opt.do,'segment'),  opt.do.segment  = false;  end
 % Output directory
 if ~isfield(opt,'dir_out'),     opt.dir_out   = 'output';    end
 if ~isfield(opt,'dir_out2d'),   opt.dir_out2d = opt.dir_out; end
+% Labels options
+if ~isfield(opt,'labels'),      opt.labels      = struct; end
+if ~isfield(opt.labels,'part'), opt.labels.part = [];      end
 % coreg options
 if ~isfield(opt,'coreg'),       opt.coreg     = struct; end
 if ~isfield(opt.coreg,'ref'),   opt.coreg.ref = 1;      end
