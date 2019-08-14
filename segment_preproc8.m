@@ -91,12 +91,14 @@ if isempty(dir_out)
 end
    
 pths   = cell(1,4);
-prefix = {'c','rc','wc','mwc'};
+prefix = {'c[1-6]','rc[1-6]','wc[1-6]','mwc[1-6]'};
 for i=1:numel(prefix)
     files   = spm_select('List',dir_out,['^' prefix{i} '.*\.nii$']);
-    pths{i} = cellstr(files);
-    for i1=1:numel(pths{i})
-        pths{i}{i1} = fullfile(dir_out,pths{i}{i1});        
+    if ~isempty(files)
+        pths{i} = cellstr(files);
+        for i1=1:numel(pths{i})
+            pths{i}{i1} = fullfile(dir_out,pths{i}{i1});        
+        end
     end
 end
 

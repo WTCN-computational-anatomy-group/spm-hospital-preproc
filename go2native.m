@@ -10,7 +10,7 @@ for c=1:C
     end        
 end
 
-if numel(out.pth.seg)
+if ~isempty(out.pth.seg)
     for i1=1:numel(out.pth.seg{1})
         fname = deblank(out.pth.seg{1}{i1});
         Mc    = spm_get_space(fname);

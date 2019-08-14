@@ -49,11 +49,11 @@ if     TESTCASE == 1
     opt.write2d.axis_2d = 3;    % 1. Sagittal 2. Coronal 3. Axial
     opt.do.write2d      = true;
     
-    opt.do.segment                  = true;
-    opt.segment.write_tc            = false(6,4);
-    opt.segment.write_tc(1:3,[3 4]) = true;
-    opt.segment.write_df            = [true true];
-    opt.segment.write_bf            = [true true];
+    opt.do.segment              = true;
+    opt.segment.write_tc        = false(6,4);
+    opt.segment.write_tc(1:3,1) = true;
+    opt.segment.write_df        = [false false];
+    opt.segment.write_bf        = [false false];
 elseif TESTCASE == 2        
     % MRI multi-channel w. labels
     dat.Nii       = cell(1,2);
