@@ -8,7 +8,7 @@ for n=1:N
     
     f             = Nii{1}(n).dat.fname;
     [pth,nam,ext] = fileparts(f);
-    nf            = fullfile(pth,['den' nam ext]);
+    nf            = fullfile(pth,['dencpy' nam ext]);
     
     delete(f);
     Nii{1}(n) = nifti(nf);

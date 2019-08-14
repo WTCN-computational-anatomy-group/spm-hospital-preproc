@@ -20,8 +20,17 @@ end
 if isempty(write_bf)
     write_bf = false(N,2);
 end
+if numel(write_bf) == 1
+    write_bf = repmat(write_bf,1,2);
+end
+if size(write_bf,1) == 1
+    write_bf = repmat(write_bf,N,1);
+end
 if isempty(write_df)
     write_df = false(1,2);
+end
+if numel(write_df) == 1
+    write_df = repmat(write_df,1,2);
 end
 
 % Segmentation options
