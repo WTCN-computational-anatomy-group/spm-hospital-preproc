@@ -92,8 +92,9 @@ if isempty(dir_out)
     dir_out = fileparts(V(1).fname);
 end
    
-pths   = cell(1,4);
-prefix = {'c[1-6]','rc[1-6]','wc[1-6]','mwc[1-6]'};
+[~,nam] = fileparts(V(1).fname);
+pths    = cell(1,4);
+prefix  = {['c[1-6]' nam],['rc[1-6]' nam],['wc[1-6]' nam],['mwc[1-6]' nam]};
 for i=1:numel(prefix)
     files   = spm_select('List',dir_out,['^' prefix{i} '.*\.nii$']);
     if ~isempty(files)

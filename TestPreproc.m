@@ -15,7 +15,7 @@ clear;
 
 %----------------------
 % Pick a test-case:
-% 1. MRI single-channel with 2D version
+% 1. MRI single-channel with segmentation and 2D versions
 % 2. MRI multi-channel with labels
 % 3. CT w. labels
 % 4. Hospital MRI superres
@@ -44,7 +44,7 @@ if     TESTCASE == 1
     opt.do.real_mni     = false;        
     opt.do.crop         = true;   
     opt.crop.neck       = true;
-    opt.do.denoise      = false;
+    opt.do.denoise      = true;
     opt.do.vx           = true; 
     opt.vx.size         = 4;   
     opt.write2d.axis_2d = 3;    % 1. Sagittal 2. Coronal 3. Axial
