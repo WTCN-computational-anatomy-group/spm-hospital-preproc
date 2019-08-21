@@ -43,10 +43,11 @@ if ~isfield(opt.write2d,'axis_2d'), opt.write2d.axis_2d = 3;      end % 1. Sagit
 if ~isfield(opt.write2d,'sliceix'), opt.write2d.sliceix = [];     end
 % Segment options
 if ~isfield(opt,'segment'),          opt.segment          = struct; end
-if ~isfield(opt.segment,'write_tc'), opt.segment.write_tc = [];  end
-if ~isfield(opt.segment,'write_bf'), opt.segment.write_bf = [];  end
-if ~isfield(opt.segment,'write_df'), opt.segment.write_df = [];  end
-if ~isfield(opt.segment,'dir_out'),  opt.segment.dir_out  = [];  end
+if ~isfield(opt.segment,'write_tc'), opt.segment.write_tc = [];     end
+if ~isfield(opt.segment,'write_bf'), opt.segment.write_bf = [];     end
+if ~isfield(opt.segment,'write_df'), opt.segment.write_df = [];     end
+if ~isfield(opt.segment,'dir_out'),  opt.segment.dir_out  = [];     end
+if ~isfield(opt.segment,'make_4d'),  opt.segment.make_4d  = false;  end
 % Path to denoising toolbox (https://github.com/WCHN/mtv-preproc)
 if ~isfield(opt,'pth_mtv'),     opt.pth_mtv   = '/home/mbrud/dev/mbrud/code/matlab/MTV-preproc'; end
 %==========================================================================

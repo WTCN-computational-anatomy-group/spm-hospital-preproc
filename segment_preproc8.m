@@ -2,6 +2,12 @@ function pths = segment_preproc8(Nii,opt)
 
 fprintf('Segmenting...')
 
+write_tc = opt.write_tc;
+write_bf = opt.write_bf;
+write_df = opt.write_df;
+dir_out  = opt.dir_out;
+make_4d  = opt.make_4d;
+
 K = 6;             % Number of tissue classes
 N = numel(Nii{1}); % Number of channels
 V = spm_vol;
@@ -10,10 +16,6 @@ for n=1:N
 end
 
 % Write options
-write_tc = opt.write_tc;
-write_bf = opt.write_bf;
-write_df = opt.write_df;
-dir_out  = opt.dir_out;
 if isempty(write_tc)
     write_tc = true(K,4);
 end
@@ -99,6 +101,54 @@ for i=1:numel(prefix)
         for i1=1:numel(pths{i})
             pths{i}{i1} = fullfile(dir_out,pths{i}{i1});        
         end
+    end
+end
+
+K = numel(pths{1});
+if K < 6
+    % Make background class
+    Nii_seg = nifti;
+    for k=1:K
+        Nii_seg(k) = nifti(pths{1}{k});
+    end
+        
+    bg = 1;    
+    for k=1:K        
+        im = single(Nii_seg(k).dat());
+        bg = bg - im;
+    end
+    bg(bg < 0) = 0;
+    
+    f             = Nii_seg(1).dat.fname;  
+    [pth,nam,ext] = fileparts(f);
+    
+    nf = fullfile(pth,['c' num2str(K + 1) nam(3:end) ext]);  
+    create_nii(nf,bg,Nii_seg(1).mat,Nii_seg(1).dat.dtype,['Tissue class ' num2str(K + 1)], ...
+               Nii_seg(1).dat.offset,Nii_seg(1).dat.scl_slope,Nii_seg(1).dat.scl_inter);
+           
+    pths{1}{end + 1} = nf;
+end
+
+
+if make_4d
+    % Write 4D nifti with segmentations
+    K = numel(pths{1});
+    if K > 0
+        im = [];
+        for k=1:K       
+            Nii_seg = nifti(pths{1}{k});
+            imk     = single(Nii_seg.dat());
+            im      = cat(4,im,imk);
+        end
+        im(im < 0) = 0;
+        im         = im./(sum(im,4) + eps('single'));
+
+        f             = Nii_seg(1).dat.fname;  
+        [pth,nam,ext] = fileparts(f);
+
+        nf = fullfile(pth,['c0' nam(3:end) ext]);  
+        create_nii(nf,im,Nii_seg(1).mat,Nii_seg(1).dat.dtype,'Tissue classes (4D)', ...
+                   Nii_seg(1).dat.offset,Nii_seg(1).dat.scl_slope,Nii_seg(1).dat.scl_inter);           
     end
 end
 

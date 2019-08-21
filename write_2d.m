@@ -1,4 +1,4 @@
-function [Nii,P] = write_2d(Nii,dir_out2d,opt)
+function [Nii,P] = write_2d(Nii,Seg_pths,dir_out2d,opt)
 
 deg     = opt.deg;
 axis_2d = opt.axis_2d;
@@ -33,14 +33,39 @@ if numel(Nii) > 1
     end    
 end
 
-P    = cell(1,2);
+P    = cell(1,3);
 P{1} = cell(1,N);
 P{2} = cell(1,N);
+P{3} = cell(1,N);
 for i=1:2
     for n=1:N
         if (i == 2 && numel(Nii) == 1) || isempty(Nii{i}(n).dat), continue; end
         
         P{i}{n} = Nii{i}(n).dat.fname;        
+    end
+end
+
+if ~isempty(Seg_pths)
+    % Write 2D versions of 'c' segmentations
+    
+    Nii_seg = nifti;
+    
+    K = numel(Seg_pths{1});
+    for k=1:K
+        Nii_seg(k) = nifti(Seg_pths{1}{k});
+    end
+    
+    for k=1:K
+        f           = Nii_seg(k).dat.fname;  
+        [~,nam,ext] = fileparts(f);
+        nf          = fullfile(dir_out2d,['2d' nam ext]);  
+        copyfile(f,nf);
+        nf          = nm_reorient(nf);
+
+        nf         = do_write2d(nf,deg,axis_2d,sliceix);        
+        Nii_seg(k) = nifti(nf);
+        
+        P{3}{k} = nf;
     end
 end
 

@@ -11,7 +11,6 @@ clear;
 % TODO
 % Skull-strip
 % Warp intensity image
-% Write 2D segmentations
 %----------------------
 
 %----------------------
@@ -42,10 +41,12 @@ if     TESTCASE == 1
     dat.Nii = nifti(fullfile('example-data',DirInOut,'c0003s0008t01.nii'));
     
     % Options    
-    opt.do.real_mni     = true;        
+    opt.do.real_mni     = false;        
     opt.do.crop         = true;   
     opt.crop.neck       = true;
-    opt.do.denoise      = true;
+    opt.do.denoise      = false;
+    opt.do.vx           = true; 
+    opt.vx.size         = 4;   
     opt.write2d.axis_2d = 3;    % 1. Sagittal 2. Coronal 3. Axial
     opt.do.write2d      = true;
     
@@ -54,6 +55,7 @@ if     TESTCASE == 1
     opt.segment.write_tc(1:3,1) = true;
     opt.segment.write_df        = [false false];
     opt.segment.write_bf        = [false false];
+    opt.segment.make_4d         = true;
 elseif TESTCASE == 2        
     % MRI multi-channel w. labels
     dat.Nii       = cell(1,2);

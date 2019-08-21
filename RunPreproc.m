@@ -67,6 +67,11 @@ if opt.do.real_mni
     [Nii,M] = realign2mni(Nii,M);
 end
 
+if opt.do.crop
+    % Remove uneccesary data
+    Nii = crop(Nii,opt.crop);
+end
+
 if opt.do.coreg
     % Coreg
     Nii = coreg(Nii,opt.coreg);
@@ -78,11 +83,6 @@ if opt.do.denoise && ~opt.do.superres
 
     % Coreg (one more time after denoising)
     Nii = coreg(Nii,opt.coreg);
-end
-
-if opt.do.crop
-    % Remove uneccesary data
-    Nii = crop(Nii,opt.crop);
 end
 
 % The below steps are for creating images of equal size, either by MTV
@@ -110,14 +110,16 @@ if numel(Nii) > 1
     Nii = reslice_labels(Nii,opt.reslice);
 end
 
+Seg_pths = {};
 if opt.do.segment
     % Run SPM12 segmentation
     Seg_pths = segment_preproc8(Nii,opt.segment);
 end
 
+P2d = {};
 if opt.do.write2d
     % Write 2D versions
-    [~,P2d] = write_2d(Nii,opt.dir_out2d,opt.write2d);
+    [~,P2d] = write_2d(Nii,Seg_pths,opt.dir_out2d,opt.write2d);
 end
 
 % Allocate output
@@ -139,11 +141,11 @@ for i=1:2
             out.pth.lab{c} = Nii{i}(c).dat.fname;
         end
                             
-        if exist('Seg_pths','var')
+        if ~isempty(Seg_pths)
             out.pth.seg = Seg_pths;
         end
                 
-        if exist('P2d','var')
+        if ~isempty(P2d)
             if i == 1
                 out.pth.im2d{c}  = P2d{i}{c};
             else
