@@ -1,17 +1,18 @@
 function opt = get_default_opt(opt)
 % Do
-if ~isfield(opt,'do'),          opt.do          = struct; end
-if ~isfield(opt.do,'res_orig'), opt.do.res_orig = false;  end
-if ~isfield(opt.do,'real_mni'), opt.do.real_mni = false;  end
-if ~isfield(opt.do,'crop'),     opt.do.crop     = false;  end
-if ~isfield(opt.do,'coreg'),    opt.do.coreg    = false;  end
-if ~isfield(opt.do,'denoise'),  opt.do.denoise  = false;  end
-if ~isfield(opt.do,'superres'), opt.do.superres = false;  end
-if ~isfield(opt.do,'reslice'),  opt.do.reslice  = false;  end
-if ~isfield(opt.do,'vx'),       opt.do.vx       = false;  end
-if ~isfield(opt.do,'write2d'),  opt.do.write2d  = false;  end
-if ~isfield(opt.do,'writemat'), opt.do.writemat = false;  end
-if ~isfield(opt.do,'segment'),  opt.do.segment  = false;  end
+if ~isfield(opt,'do'),           opt.do           = struct; end
+if ~isfield(opt.do,'res_orig'),  opt.do.res_orig  = false;  end
+if ~isfield(opt.do,'real_mni'),  opt.do.real_mni  = false;  end
+if ~isfield(opt.do,'crop'),      opt.do.crop      = false;  end
+if ~isfield(opt.do,'coreg'),     opt.do.coreg     = false;  end
+if ~isfield(opt.do,'denoise'),   opt.do.denoise   = false;  end
+if ~isfield(opt.do,'superres'),  opt.do.superres  = false;  end
+if ~isfield(opt.do,'reslice'),   opt.do.reslice   = false;  end
+if ~isfield(opt.do,'vx'),        opt.do.vx        = false;  end
+if ~isfield(opt.do,'write2d'),   opt.do.write2d   = false;  end
+if ~isfield(opt.do,'writemat'),  opt.do.writemat  = false;  end
+if ~isfield(opt.do,'segment'),   opt.do.segment   = false;  end
+if ~isfield(opt.do,'normalise'), opt.do.normalise = false;  end
 % Output directory
 if ~isfield(opt,'dir_out'),     opt.dir_out   = 'output';    end
 if ~isfield(opt,'dir_out2d'),   opt.dir_out2d = opt.dir_out; end
@@ -48,6 +49,11 @@ if ~isfield(opt.segment,'write_bf'), opt.segment.write_bf = [];     end
 if ~isfield(opt.segment,'write_df'), opt.segment.write_df = [];     end
 if ~isfield(opt.segment,'dir_out'),  opt.segment.dir_out  = [];     end
 if ~isfield(opt.segment,'make_4d'),  opt.segment.make_4d  = false;  end
+if ~isfield(opt.segment,'mask'),     opt.segment.mask     = false;  end
+% Normalise options
+if ~isfield(opt,'normalise'),      opt.normalise      = struct; end
+if ~isfield(opt.normalise,'mask'), opt.normalise.mask = false;  end
+if ~isfield(opt.normalise,'vol'),  opt.normalise.vol  = 1;      end
 % Path to denoising toolbox (https://github.com/WCHN/mtv-preproc)
-if ~isfield(opt,'pth_mtv'),     opt.pth_mtv   = '/home/mbrud/dev/mbrud/code/matlab/MTV-preproc'; end
+if ~isfield(opt,'pth_mtv'),        opt.pth_mtv   = ''; end
 %==========================================================================

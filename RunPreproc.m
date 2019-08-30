@@ -28,7 +28,10 @@ if nargin < 2, opt = struct; end
 opt = get_default_opt(opt);
 
 if opt.do.denoise || opt.do.superres
-    % Add denoising toolbox to path
+    % Add MTV toolbox to path
+    if isempty(opt.pth_mtv)
+        error('Set path to MTV toolbox (opt.pth_mtv), or disable denoising/superres.')
+    end
     addpath(opt.pth_mtv)
 end
 
@@ -105,21 +108,27 @@ else
     end
 end
 
-if numel(Nii) > 1
+if numel(Nii) > 1 && (opt.do.crop || opt.do.superres || opt.do.vx || opt.do.reslice)
     % Reslice labels
     Nii = reslice_labels(Nii,opt.reslice);
 end
 
-Seg_pths = {};
+pth_seg = {};
 if opt.do.segment
     % Run SPM12 segmentation
-    Seg_pths = segment_preproc8(Nii,opt.segment);
+    pth_seg = segment_preproc8(Nii,opt.segment);
+end
+
+pth_norm = {};
+if opt.do.normalise
+    % Create normalised versions of Nii
+    pth_norm = make_normalised(Nii,opt.normalise);
 end
 
 P2d = {};
 if opt.do.write2d
     % Write 2D versions
-    [~,P2d] = write_2d(Nii,Seg_pths,opt.dir_out2d,opt.write2d);
+    [~,P2d] = write_2d(Nii,pth_seg,opt.dir_out2d,opt.write2d);
 end
 
 % Allocate output
@@ -130,6 +139,7 @@ out.pth.im2d  = cell(1,C);
 out.pth.lab   = cell(1,C);
 out.pth.lab2d = cell(1,C);
 out.pth.seg   = {}; 
+out.pth.norm  = {}; 
 out.mat       = cell(1,C);
 for i=1:2
     for c=1:C
@@ -141,10 +151,14 @@ for i=1:2
             out.pth.lab{c} = Nii{i}(c).dat.fname;
         end
                             
-        if ~isempty(Seg_pths)
-            out.pth.seg = Seg_pths;
+        if ~isempty(pth_seg)
+            out.pth.seg = pth_seg;
         end
-                
+                            
+        if ~isempty(pth_norm)
+            out.pth.norm = pth_norm;
+        end
+        
         if ~isempty(P2d)
             if i == 1
                 out.pth.im2d{c}  = P2d{i}{c};

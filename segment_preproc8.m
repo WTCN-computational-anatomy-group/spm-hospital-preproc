@@ -17,7 +17,8 @@ end
 
 % Write options
 if isempty(write_tc)
-    write_tc = true(K,4);
+    write_tc            = false(K,4);
+    write_tc(1:3,[1 3]) = true;
 end
 if isempty(write_bf)
     write_bf = false(N,2);
@@ -93,8 +94,9 @@ if isempty(dir_out)
 end
    
 [~,nam] = fileparts(V(1).fname);
-pths    = cell(1,4);
-prefix  = {['c[1-6]' nam],['rc[1-6]' nam],['wc[1-6]' nam],['mwc[1-6]' nam]};
+pths    = cell(1,6);
+prefix  = {['c[1-6]' nam],['rc[1-6]' nam],['wc[1-6]' nam], ...
+           ['mwc[1-6]' nam],['y_' nam],['iy_' nam]};
 for i=1:numel(prefix)
     files   = spm_select('List',dir_out,['^' prefix{i} '.*\.nii$']);
     if ~isempty(files)
@@ -106,7 +108,7 @@ for i=1:numel(prefix)
 end
 
 K = numel(pths{1});
-if K < 6
+if K> 0 && K < 6
     % Make background class
     Nii_seg = nifti;
     for k=1:K
