@@ -82,18 +82,9 @@
 
 ## Other ignore
 example-data/
-demo-scripts/
 process-population/
-output/
+demo-scripts/
 *~
 *.nii
 *.Nii
 *.csv
-
-TempData/
-
-DemoScriptJames\.m
-
-DemoScriptMo\.m
-
-process-population/

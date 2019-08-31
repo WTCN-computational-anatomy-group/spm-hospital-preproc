@@ -29,10 +29,10 @@ opt = get_default_opt(opt);
 
 if opt.do.denoise || opt.do.superres
     % Add MTV toolbox to path
-    if isempty(opt.pth_mtv)
-        error('Set path to MTV toolbox (opt.pth_mtv), or disable denoising/superres.')
+    if isempty(opt.pth_spm_superres)
+        error('Set path to MTV toolbox (opt.pth_spm_superres), or disable denoising/superres.')
     end
-    addpath(opt.pth_mtv)
+    addpath(opt.pth_spm_superres)
 end
 
 % Because it is possible to include labels, in the second index of Nii 

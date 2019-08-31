@@ -54,6 +54,6 @@ if ~isfield(opt.segment,'mask'),     opt.segment.mask     = false;  end
 if ~isfield(opt,'normalise'),      opt.normalise      = struct; end
 if ~isfield(opt.normalise,'mask'), opt.normalise.mask = false;  end
 if ~isfield(opt.normalise,'vol'),  opt.normalise.vol  = 1;      end
-% Path to denoising toolbox (https://github.com/WCHN/mtv-preproc)
-if ~isfield(opt,'pth_mtv'),        opt.pth_mtv   = ''; end
+% Path to MTV toolbox
+if ~isfield(opt,'pth_spm_superres'), opt.pth_spm_superres  = 'spm_superres'; end
 %==========================================================================
