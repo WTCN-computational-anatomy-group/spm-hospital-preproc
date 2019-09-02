@@ -1,6 +1,4 @@
-function Nii = crop(Nii,opt)
-
-rem_neck = opt.neck;
+function Nii = crop(Nii)
 
 fprintf('Cropping...')
 N        = numel(Nii{1});
@@ -8,7 +6,7 @@ prefix   = 'cr';
 for n=1:N
     f = Nii{1}(n).dat.fname;
     
-    atlas_crop(f,prefix,rem_neck);
+    atlas_crop(f,prefix);
     
     [pth,nam,ext] = fileparts(f);
     nf            = fullfile(pth,[prefix nam ext]);
@@ -20,8 +18,8 @@ fprintf('done!\n')
 %==========================================================================
 
 %==========================================================================
-function [Affine,bb] = atlas_crop(P,prefix,rem_neck)
-% Removes air outside of head
+function [Affine,bb] = atlas_crop(P,prefix)
+% Crop image to SPM atlas size
 % FORMAT [Affine,bb] = atlas_crop(P,Affine,prefix,rem_neck)
 % P        - Path to NIfTI file
 % prefix   - File prefix (if empty -> overwrites) ['']
@@ -29,11 +27,69 @@ function [Affine,bb] = atlas_crop(P,prefix,rem_neck)
 % bb - Computed bounding box
 %
 % This function rigidly registers the SPM atlas to an image and then
-% removes image data outside of the head.
+% removes image data outside of the atlas.
 %__________________________________________________________________________
 % Copyright (C) 2018 Wellcome Trust Centre for Neuroimaging
 if nargin<2, prefix   = 'cr'; end
-if nargin<3, rem_neck = 0;  end
+
+% Locate TPM.nii in SPM
+pthmu = fullfile(spm('dir'),'tpm','TPM.nii,');
+Vf    = spm_vol(P);
+Vmu   = spm_vol(pthmu);
+matf  = Vf(1).mat;
+matmu = Vmu(1).mat;
+dmf   = Vf(1).dim;
+dmmu  = Vmu(1).dim;
+
+mu = spm_load_priors8(Vmu);    
+
+c                = (Vf(1).dim+1)/2;
+Vf(1).mat(1:3,4) = -matf(1:3,1:3)*c(:);
+[Affine1,ll1]    = spm_maff8(Vf(1),8,(0+1)*16,mu,[],'mni'); % Closer to rigid
+Affine1          = Affine1*(Vf(1).mat/matf);
+
+% Run using the origin from the header
+Vf(1).mat      = matf;
+[Affine2,ll2] = spm_maff8(Vf(1),8,(0+1)*16,mu,[],'mni'); % Closer to rigid
+
+% Pick the result with the best fit
+if ll1>ll2, Affine  = Affine1; else Affine  = Affine2; end
+
+Affine = spm_maff8(P,4,32,mu,Affine,'mni');
+Affine = spm_maff8(P,4,1,mu,Affine,'mni');
+
+% Voxel locations in input
+T  = matf\(Affine\matmu);
+
+% Corners
+crnmu = [1    1    1    1
+        1    1    dmmu(3) 1
+        1    dmmu(2) 1    1
+        1    dmmu(2) dmmu(3) 1
+        dmmu(1) 1    1    1
+        dmmu(1) 1    dmmu(3) 1
+        dmmu(1) dmmu(2) 1    1
+        dmmu(1) dmmu(2) dmmu(3) 1]';  
+
+crnf = T*crnmu;
+
+% Bounding-box
+bb = zeros(2,3);
+for i=1:3
+    X       = crnf(i,:);
+    bb(1,i) = max(X);
+    bb(2,i) = min(X);
+end
+
+% Do cropping
+subvol(Vf,bb,prefix);      
+%==========================================================================
+
+%==========================================================================
+function [Affine,bb] = atlas_crop_new(P,prefix,remneck)
+
+if nargin<2, prefix  = 'cr'; end
+if nargin<3, remneck = 0;  end
 
 % Locate TPM.nii in SPM
 pth_tpm = fullfile(spm('dir'),'tpm','TPM.nii,');
@@ -69,9 +125,10 @@ Ltpm1 = [120 72.2 37.3 1]'; Ltpm2 = [120 72.2 75.9 1]';
 Rtpm1 = [3  72.2 37.3 1]'; Rtpm2 = [3  72.2 75.9 1]';
 
 Stpm1 = [58.6 42.6 119 1]'; Stpm2 = [58.60 99.4 119 1]';
-if rem_neck==2
-    Itpm1 = [61 42 31   1]'; Itpm2 = [61 107 29 1]';   
-elseif rem_neck==1
+if remneck_and_air==2
+    % For IR data 
+    Itpm1 = [61 42 31   1]';      Itpm2 = [61 107 29 1]';      
+elseif remneck_and_air==1
     Itpm1 = [58.6 39.4 2.5   1]'; Itpm2 = [58.60 99.4 2.5  1]';    
 else
     Itpm1 = [58.6 39.4 -200  1]'; Itpm2 = [58.60 99.4 -200 1]';
@@ -84,7 +141,7 @@ T  = mat\(Affine\mattpm);
 L1 = T*Ltpm1; L2 = T*Ltpm2;
 R1 = T*Rtpm1; R2 = T*Rtpm2;
 U1 = T*Stpm1; U2 = T*Stpm2;
-D1 = T*Itpm1; D2 = T*Itpm2;
+D1 = T*Itpm1; D2 = T*Itpm2; % Neck
 A1 = T*Atpm1; A2 = T*Atpm2;
 P1 = T*Ptpm1; P2 = T*Ptpm2;
 
@@ -97,6 +154,10 @@ for i=1:3
     bb(2,i) = min(X);
 end
 
+if remneck
+    
+end
+    
 % Do cropping
 subvol(Vin,bb,prefix);      
 %==========================================================================

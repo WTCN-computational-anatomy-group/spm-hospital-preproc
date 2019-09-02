@@ -13,6 +13,7 @@ if ~isfield(opt.do,'write2d'),   opt.do.write2d   = false;  end
 if ~isfield(opt.do,'writemat'),  opt.do.writemat  = false;  end
 if ~isfield(opt.do,'segment'),   opt.do.segment   = false;  end
 if ~isfield(opt.do,'normalise'), opt.do.normalise = false;  end
+if ~isfield(opt.do,'go2native'), opt.do.go2native = true;   end
 % Output directory
 if ~isfield(opt,'dir_out'),     opt.dir_out   = 'output';    end
 if ~isfield(opt,'dir_out2d'),   opt.dir_out2d = opt.dir_out; end
@@ -34,9 +35,6 @@ if ~isfield(opt.reslice,'deg'), opt.reslice.deg = 4;      end
 if ~isfield(opt,'vx'),          opt.vx      = struct; end
 if ~isfield(opt.vx,'size'),     opt.vx.size = 1;      end
 if ~isfield(opt.vx,'deg'),      opt.vx.deg  = 4;      end
-% Crop options
-if ~isfield(opt,'crop'),        opt.crop      = struct; end
-if ~isfield(opt.crop,'neck'),   opt.crop.neck = false;  end
 % 2D options
 if ~isfield(opt,'write2d'),         opt.write2d         = struct; end
 if ~isfield(opt.write2d,'deg'),     opt.write2d.deg     = 0;      end
@@ -54,6 +52,4 @@ if ~isfield(opt.segment,'mask'),     opt.segment.mask     = false;  end
 if ~isfield(opt,'normalise'),      opt.normalise      = struct; end
 if ~isfield(opt.normalise,'mask'), opt.normalise.mask = false;  end
 if ~isfield(opt.normalise,'vol'),  opt.normalise.vol  = 1;      end
-% Path to MTV toolbox
-if ~isfield(opt,'pth_spm_superres'), opt.pth_spm_superres  = 'spm_superres'; end
 %==========================================================================

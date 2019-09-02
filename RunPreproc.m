@@ -27,13 +27,8 @@ end
 if nargin < 2, opt = struct; end
 opt = get_default_opt(opt);
 
-if opt.do.denoise || opt.do.superres
-    % Add MTV toolbox to path
-    if isempty(opt.pth_spm_superres)
-        error('Set path to MTV toolbox (opt.pth_spm_superres), or disable denoising/superres.')
-    end
-    addpath(opt.pth_spm_superres)
-end
+% Add MTV toolbox to path
+addpath(fullfile(fileparts(mfilename('fullpath')),'spm_superres'));
 
 % Because it is possible to include labels, in the second index of Nii 
 % (i.e. Nii{2})
@@ -72,7 +67,7 @@ end
 
 if opt.do.crop
     % Remove uneccesary data
-    Nii = crop(Nii,opt.crop);
+    Nii = crop(Nii);
 end
 
 if opt.do.coreg
@@ -178,5 +173,10 @@ for i=1:2
             out.mat{c} = M{c};
         end  
     end
+end
+
+if opt.do.go2native
+    % Go back to native space orientation
+    go2native(out);
 end
 %==========================================================================
