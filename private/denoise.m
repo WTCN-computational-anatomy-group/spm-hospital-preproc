@@ -29,6 +29,7 @@ function do_denoise(P,Verbose)
 %             'WorkersParfor',WorkersParfor};
             
 opt.Denoise = true;
+opt.DoCoReg = false;
 
 spm_superres({P},opt);
 %==========================================================================
