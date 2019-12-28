@@ -23,14 +23,18 @@ if numel(Nii) > 1
     for n=1:N
         if isempty(Nii{2}(n).dat), continue; end
         
-        f = Nii{2}(n).dat.fname;
-        copyfile(f,DirOut);
+        f           = Nii{2}(n).dat.fname;
+        [~,nam,ext] = fileparts(f);
+        nf          = fullfile(DirOut,[nam ext]);
 
-        [~,nam,ext]         = fileparts(f);
-        nf                  = fullfile(DirOut,[nam ext]);
-        Nii{2}(n).dat.fname = nf;
+        im = Nii{2}(n).dat();
         
-        Nii{2}(n).dat.permission = 'rw';
+        if max(im(:)) > 255, error('Copy labels: values over 255!'); end
+        
+        create_nii(nf,im,Nii{2}(n).mat,spm_type('uint8'),'labels');        
+        
+        Nii{2}(n) = nifti(nf);
+%         Nii{2}(n).dat.permission = 'rw';
     end    
 end
 fprintf('done!\n')
