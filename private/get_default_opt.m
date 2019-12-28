@@ -30,11 +30,11 @@ if ~isfield(opt.superres,'Verbose'), opt.superres.Verbose = 0;      end
 % Reslice options
 if ~isfield(opt,'reslice'),     opt.reslice     = struct; end
 if ~isfield(opt.reslice,'ref'), opt.reslice.ref = 1;      end
-if ~isfield(opt.reslice,'deg'), opt.reslice.deg = 4;      end
+if ~isfield(opt.reslice,'deg'), opt.reslice.deg = 1;      end
 % Voxel size options
 if ~isfield(opt,'vx'),          opt.vx      = struct; end
 if ~isfield(opt.vx,'size'),     opt.vx.size = 1;      end
-if ~isfield(opt.vx,'deg'),      opt.vx.deg  = 4;      end
+if ~isfield(opt.vx,'deg'),      opt.vx.deg  = 1;      end
 % 2D options
 if ~isfield(opt,'write2d'),         opt.write2d         = struct; end
 if ~isfield(opt.write2d,'deg'),     opt.write2d.deg     = 0;      end
