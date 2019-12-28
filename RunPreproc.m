@@ -41,6 +41,10 @@ if ~(exist(opt.dir_out,'dir') == 7)
     % Create output directory
     mkdir(opt.dir_out);  
 end
+if ~(exist(opt.dir_out2d,'dir') == 7)  
+    % Create 2D output directory
+    mkdir(opt.dir_out2d);  
+end
 % Make sure output directory is encoded by its full path
 s           = what(opt.dir_out);
 opt.dir_out = s.path;
