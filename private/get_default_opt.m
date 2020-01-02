@@ -38,7 +38,6 @@ if ~isfield(opt.vx,'deg'),      opt.vx.deg  = 1;      end
 % 2D options
 if ~isfield(opt,'write2d'),         opt.write2d         = struct; end
 if ~isfield(opt.write2d,'deg'),     opt.write2d.deg     = 0;      end
-if ~isfield(opt.write2d,'axis_2d'), opt.write2d.axis_2d = 3;      end % 1. Sagittal 2. Coronal 3. Axial
 if ~isfield(opt.write2d,'sliceix'), opt.write2d.sliceix = [];     end
 % Segment options
 if ~isfield(opt,'segment'),          opt.segment          = struct; end
