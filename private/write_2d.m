@@ -11,7 +11,7 @@ for n=1:N
     [~,nam,ext] = fileparts(f);
     nf          = fullfile(dir_out2d,['2d' nam ext]);  
     copyfile(f,nf);
-    nf          = nm_reorient(nf);
+    nf          = nm_reorient(nf,[],'ro',0);
     
     nf        = do_write2d(nf,deg,axis_2d,sliceix);        
     Nii{1}(n) = nifti(nf);
@@ -26,7 +26,7 @@ if numel(Nii) > 1
         [~,nam,ext] = fileparts(f);
         nf          = fullfile(dir_out2d,['2d' nam ext]);  
         copyfile(f,nf);
-        nf          = nm_reorient(nf);
+        nf          = nm_reorient(nf,[],'ro',0);
 
         nf        = do_write2d(nf,deg,axis_2d,sliceix);        
         Nii{2}(n) = nifti(nf);
@@ -60,7 +60,7 @@ if ~isempty(Seg_pths)
         [~,nam,ext] = fileparts(f);
         nf          = fullfile(dir_out2d,['2d' nam ext]);  
         copyfile(f,nf);
-        nf          = nm_reorient(nf);
+        nf          = nm_reorient(nf,[],'ro',0);
 
         nf         = do_write2d(nf,deg,axis_2d,sliceix);        
         Nii_seg(k) = nifti(nf);
