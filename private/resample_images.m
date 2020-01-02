@@ -56,9 +56,11 @@ mat0 = Nii.mat;
 dm0  = size(img);
 
 % Output image properties
-D    = diag([samp 1]);
-mat  = mat0/D;
-dm   = floor(D(1:3,1:3)*dm0')';
+vx            = sqrt(sum(mat0(1:3,1:3).^2));
+samp(vx >= 1) = 1;
+D             = diag([samp 1]);
+mat           = mat0/D;
+dm            = floor(D(1:3,1:3)*dm0')';
 
 % Make interpolation grid
 [x0,y0,z0] = ndgrid(1:dm(1),1:dm(2),1:dm(3));
