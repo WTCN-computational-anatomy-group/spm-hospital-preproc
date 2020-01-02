@@ -57,7 +57,7 @@ dm0  = size(img);
 
 % Output image properties
 vx            = sqrt(sum(mat0(1:3,1:3).^2));
-samp(vx >= 1) = 1;
+% samp(vx >= 1) = 1;
 D             = diag([samp 1]);
 mat           = mat0/D;
 dm            = floor(D(1:3,1:3)*dm0')';
