@@ -41,10 +41,7 @@ if ~(exist(opt.dir_out,'dir') == 7)
     % Create output directory
     mkdir(opt.dir_out);  
 end
-if ~(exist(opt.dir_out2d,'dir') == 7)  
-    % Create 2D output directory
-    mkdir(opt.dir_out2d);  
-end
+
 % Make sure output directory is encoded by its full path
 s           = what(opt.dir_out);
 opt.dir_out = s.path;
@@ -127,7 +124,7 @@ end
 P2d = {};
 if opt.do.write2d
     % Write 2D versions
-    [~,P2d] = write_2d(Nii,pth_seg,opt.dir_out2d,opt.write2d);
+    P2d = write_2d(Nii,pth_seg,opt.dir_out2d,opt.write2d);
 end
 
 % Allocate output
