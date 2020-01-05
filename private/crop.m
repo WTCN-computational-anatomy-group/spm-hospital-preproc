@@ -34,53 +34,95 @@ if nargin<2, prefix   = 'cr'; end
 
 % Locate TPM.nii in SPM
 pthmu = fullfile(spm('dir'),'tpm','TPM.nii,');
-Vf    = spm_vol(P);
-Vmu   = spm_vol(pthmu);
-matf  = Vf(1).mat;
-matmu = Vmu(1).mat;
-dmf   = Vf(1).dim;
-dmmu  = Vmu(1).dim;
 
-mu = spm_load_priors8(Vmu);    
+Vf = spm_vol(P);
+Vm = spm_vol(pthmu);
+Mf = Vf(1).mat;
+Mm = Vm(1).mat;
+df = Vf(1).dim;
+dm = Vm(1).dim;
+vf = sqrt(sum(Mf(1:3,1:3).^2));
+vm = sqrt(sum(Mm(1:3,1:3).^2));
+
+tpm = spm_load_priors8(Vm);    
 
 c                = (Vf(1).dim+1)/2;
-Vf(1).mat(1:3,4) = -matf(1:3,1:3)*c(:);
-[Affine1,ll1]    = spm_maff8(Vf(1),8,(0+1)*16,mu,[],'mni'); % Closer to rigid
-Affine1          = Affine1*(Vf(1).mat/matf);
+Vf(1).mat(1:3,4) = -Mf(1:3,1:3)*c(:);
+[Affine1,ll1]    = spm_maff8(Vf(1),8,(0+1)*16,tpm,[],'mni'); % Closer to rigid
+Affine1          = Affine1*(Vf(1).mat/Mf);
 
 % Run using the origin from the header
-Vf(1).mat      = matf;
-[Affine2,ll2] = spm_maff8(Vf(1),8,(0+1)*16,mu,[],'mni'); % Closer to rigid
+Vf(1).mat      = Mf;
+[Affine2,ll2] = spm_maff8(Vf(1),8,(0+1)*16,tpm,[],'mni'); % Closer to rigid
 
 % Pick the result with the best fit
 if ll1>ll2, Affine  = Affine1; else Affine  = Affine2; end
 
-Affine = spm_maff8(P,4,32,mu,Affine,'mni');
-Affine = spm_maff8(P,4,1,mu,Affine,'mni');
+Affine = spm_maff8(P,4,32,tpm,Affine,'mni');
+Affine = spm_maff8(P,4,1,tpm,Affine,'mni');
 
-% Voxel locations in input
-T  = matf\(Affine\matmu);
+% Template to world (inc affine transformation)
+Tm = Affine\Mm;
 
+% Keep neck
+fc = [1    1    1    1
+      1    1    df(3) 1
+      1    df(2) 1    1
+      1    df(2) df(3) 1
+      df(1) 1    1    1
+      df(1) 1    df(3) 1
+      df(1) df(2) 1    1
+      df(1) df(2) df(3) 1]';  
+
+fc = Mf(1:3,1:4)*fc;
+
+% bounding box
+mn  = min(fc,[],2)';
+mx  = max(fc,[],2)';
+bbf = [mn; mx];
+
+mmn = bbf(1,:);
+mmx = bbf(2,:);
+    
 % Corners
-crnmu = [1    1    1    1
-        1    1    dmmu(3) 1
-        1    dmmu(2) 1    1
-        1    dmmu(2) dmmu(3) 1
-        dmmu(1) 1    1    1
-        dmmu(1) 1    dmmu(3) 1
-        dmmu(1) dmmu(2) 1    1
-        dmmu(1) dmmu(2) dmmu(3) 1]';  
+tc = [1    1    1    1
+      1    1    dm(3) 1
+      1    dm(2) 1    1
+      1    dm(2) dm(3) 1
+      dm(1) 1    1    1
+      dm(1) 1    dm(3) 1
+      dm(1) dm(2) 1    1
+      dm(1) dm(2) dm(3) 1]';  
 
-crnf = T*crnmu;
+tc = Tm(1:3,1:4)*tc;
 
-% Bounding-box
-bb = zeros(2,3);
-for i=1:3
-    X       = crnf(i,:);
-    bb(1,i) = max(X);
-    bb(2,i) = min(X);
+% bounding box
+mn  = min(tc,[],2)';
+mx  = max(tc,[],2)';
+
+mn(3) = mmn(3);
+% mx(3) = mmx(3);
+
+bbm = [mn; mx];
+
+vmn = bbm(1,:);
+vmx = bbm(2,:);
+mn(isnan(mn)) = vmn(isnan(mn));
+mx(isnan(mx)) = vmx(isnan(mx));
+
+mat    = spm_matrix([mn 0 0 0 vf])*spm_matrix([-1 -1 -1]);
+imgdim = ceil(mat \ [mx 1]' - 0.1)';
+
+% Produce new image
+VO            = Vf;
+[pth,nam,ext] = fileparts(Vf.fname);
+VO.fname      = fullfile(pth,[prefix nam ext]);
+VO.dim(1:3)   = imgdim(1:3);
+VO.mat        = mat;
+VO = spm_create_vol(VO);
+for i = 1:imgdim(3)
+    M = inv(spm_matrix([0 0 -i])*inv(VO.mat)*Vf.mat);
+    img = spm_slice_vol(Vf, M, imgdim(1:2), 1); % (linear interp)
+    spm_write_plane(VO, img, i);
 end
-
-% Do cropping
-subvol(Vf,bb,prefix);      
 %==========================================================================
