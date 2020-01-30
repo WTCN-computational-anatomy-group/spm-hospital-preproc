@@ -27,7 +27,7 @@ for ax=1:3 % loop over anatomical axis
         copyfile(f,nf);
         
         nf = make_1mm_isotropic(nf);
-        nf = nm_reorient(nf,[],'ro',0);
+        nf = nm_reorient(nf,[],'ro',1);
         nf = atlas_crop(nf);
         nf = do_write2d(nf,deg,ax,sliceix);              
         
@@ -49,7 +49,7 @@ for ax=1:3 % loop over anatomical axis
             copyfile(f,nf);
                         
             nf = make_1mm_isotropic(nf);
-            nf = nm_reorient(nf,[],'ro',0);
+            nf = nm_reorient(nf,[],'ro',1);
             nf = atlas_crop(nf);
             nf = do_write2d(nf,deg,ax,sliceix);     
             
@@ -78,7 +78,7 @@ for ax=1:3 % loop over anatomical axis
             copyfile(f,nf);
             
             nf = make_1mm_isotropic(nf);
-            nf = nm_reorient(nf,[],'ro',0);
+            nf = nm_reorient(nf,[],'ro',1);
             nf = atlas_crop(nf);
             nf = do_write2d(nf,deg,ax,sliceix);      
 
@@ -157,7 +157,7 @@ end
 function nf = make_1mm_isotropic(f)
 
 vx  = 1;
-deg = 0;
+deg = 1;
 Nii = nifti(f);
 
 samp = sqrt(sum(Nii.mat(1:3,1:3).^2));

@@ -68,7 +68,7 @@ end
 
 if opt.do.crop
     % Remove uneccesary data
-    Nii = crop(Nii);
+    Nii = crop(Nii,opt.crop);
 end
 
 if opt.do.coreg

@@ -23,6 +23,9 @@ if ~isfield(opt.labels,'part'), opt.labels.part = [];      end
 % coreg options
 if ~isfield(opt,'coreg'),       opt.coreg     = struct; end
 if ~isfield(opt.coreg,'ref'),   opt.coreg.ref = 1;      end
+% crop options
+if ~isfield(opt,'crop'),           opt.crop           = struct; end
+if ~isfield(opt.crop,'keep_neck'), opt.crop.keep_neck = true;      end
 % superres options
 if ~isfield(opt,'superres'),         opt.superres         = struct; end
 if ~isfield(opt.superres,'ix'),      opt.superres.ix      = [];     end
