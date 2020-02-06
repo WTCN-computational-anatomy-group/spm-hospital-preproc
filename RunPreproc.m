@@ -66,6 +66,11 @@ if opt.do.real_mni
     [Nii,M] = realign2mni(Nii,M);
 end
 
+if opt.do.nm_reorient
+    % Reslice so that image data is in world space
+    [Nii,M] = nm_reorient_ims(Nii); % M is set to identity
+end
+
 if opt.do.crop
     % Remove uneccesary data
     Nii = crop(Nii,opt.crop);
@@ -104,7 +109,7 @@ else
     end
 end
 
-if numel(Nii) > 1 && (opt.do.crop || opt.do.superres || opt.do.vx || opt.do.reslice)
+if numel(Nii) > 1 && (opt.do.nm_reorient || opt.do.crop || opt.do.superres || opt.do.vx || opt.do.reslice)
     % Reslice labels
     Nii = reslice_labels(Nii,opt.reslice);
 end

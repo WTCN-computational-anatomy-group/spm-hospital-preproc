@@ -19,57 +19,58 @@ end
 %==========================================================================
 
 %==========================================================================
-function Niio = do_reslice(V_ref,Nii)
-% Parameters
-deg = 1;
-dt  = [spm_type('uint8') spm_platform('bigend')];
+function oNii = do_reslice(VRef,NiiLabels)
+Mn  = VRef(1).mat;
+dmn = VRef(1).dim;
+Ml  = NiiLabels(1).mat;
+lab = single(NiiLabels(1).dat());
+fnl = NiiLabels(1).dat.fname;
 
-% Get labels, etc
-labels        = Nii.dat(:,:,:);
-lkp           = unique(labels)';
-K             = numel(lkp); % Number of labels
-fname         = Nii.dat.fname;
-[pth,nam,ext] = fileparts(fname);
+M = Ml\Mn;
+y = Affine(dmn,M);
 
-fnames   = {V_ref.fname, Nii.dat.fname}';
-Vo       = run_reslice(fnames,0);
-Niio     = nifti(Vo(2).fname);
-delete(Nii.dat.fname);
+ul   = unique(lab);
+ul   = ul';
+l12  = zeros(dmn(1:3),'single');
+p1   = zeros(size(l12),'single');
+filt = [0.125 0.75 0.125];
+for l=ul
+    g0        = single(lab == l);
+    g0        = convn(g0,reshape(filt,[3,1,1]),'same');
+    g0        = convn(g0,reshape(filt,[1,3,1]),'same');
+    g0        = convn(g0,reshape(filt,[1,1,3]),'same');
+    tmp       = spm_diffeo('bsplins',g0,y,[1 1 1 0 0 0]);
+    msk1      = (tmp>p1);
+    p1(msk1)  = tmp(msk1);
+    l12(msk1) = l;
+end             
+l12 = uint8(l12);
 
-% % Iterate over each label and create a resliced label image (nlabels)
-% dm      = V_ref.dim;
-% labelso = zeros([dm K],'single');
-% cnt     = 1;
-% for k=lkp
-%     labels_k = single(labels == k);
-% 
-%     % Smooth
-%     labels_k = convn(labels_k,reshape([0.25 0.5 0.25],[3,1,1]),'same');
-%     labels_k = convn(labels_k,reshape([0.25 0.5 0.25],[1,3,1]),'same');
-%     labels_k = convn(labels_k,reshape([0.25 0.5 0.25],[1,1,3]),'same');
-%                 
-%     fname_k = fullfile(pth,['n' nam ext]);    
-%     create_nii(fname_k,labels_k,Nii.mat,dt,'Resliced labels');        
-%         
-%     % Reslice
-%     fnames   = {V_ref.fname, fname_k}';
-%     Vo       = run_reslice(fnames,deg);
-%     labels_k = single(Vo(2).private.dat(:,:,:));
-% 
-%     labelso(:,:,:,cnt) = cat(4,labels_k);
-%     
-%     delete(fname_k);
-%     
-%     cnt = cnt + 1;
-% end
-% clear labels labels_k
-% delete(fname);
-% 
-% % Get MLs of resliced labels
-% [~,ml] = max(labelso,[],4);
-% ml     = ml - 1;
-% 
-% % Write output
-% Niio            = nifti(Vo(2).fname);
-% Niio.dat(:,:,:) = uint8(ml);
+[pth,nam,ext] = fileparts(fnl);
+nfnl          = fullfile(pth,['r' nam ext]);
+
+oNii         = nifti;
+oNii.dat     = file_array(nfnl,dmn,NiiLabels(1).dat.dtype,NiiLabels(1).dat.offset,NiiLabels(1).dat.scl_slope,NiiLabels(1).dat.scl_inter);
+oNii.mat     = Mn;
+oNii.mat0    = Mn;
+oNii.descrip = 'Labels';
+create(oNii);
+oNii.dat(:)  = l12(:);
+
+delete(fnl);
+%==========================================================================
+
+%==========================================================================
+% Affine()
+function psi0 = Affine(d,Mat)
+id    = Identity(d);
+psi0  = reshape(reshape(id,[prod(d) 3])*Mat(1:3,1:3)' + Mat(1:3,4)',[d 3]);
+if d(3) == 1, psi0(:,:,:,3) = 1; end
+%==========================================================================
+
+%==========================================================================
+% Identity()
+function id = Identity(d)
+id = zeros([d(:)',3],'single');
+[id(:,:,:,1),id(:,:,:,2),id(:,:,:,3)] = ndgrid(single(1:d(1)),single(1:d(2)),single(1:d(3)));
 %==========================================================================

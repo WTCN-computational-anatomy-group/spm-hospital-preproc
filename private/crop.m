@@ -85,11 +85,16 @@ bb = [mn; mx];
 
 if keep_neck
     % Find Dorso-ventral dimension in image space
-    c        = [1 1 1    1
-                1 1 d(3) 1]';
-    c        = M(1:3,1:4)*c;
-    [~,dv]   = max(abs(c(:,1) - c(:,2)) .* vf');
-    bb(:,dv) = [1; df(dv)];
+    c = [d(1)/2 d(2)/2 1    1
+         d(1)/2 d(2)/2 d(3) 1]';
+    c = M(1:3,1:4)*c;
+    [~,dv] = max(abs(c(:,1)-c(:,2)));
+    proj = c(dv,:);
+    if proj(1) < proj(2) 
+        bb(:,dv) = [1; ceil(proj(2))];
+    else
+        bb(:,dv) = [ceil(proj(2)); df(dv)];
+    end
 end
 
 % Do cropping

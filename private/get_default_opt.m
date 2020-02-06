@@ -1,28 +1,29 @@
 function opt = get_default_opt(opt)
 % Do
-if ~isfield(opt,'do'),           opt.do           = struct; end
-if ~isfield(opt.do,'res_orig'),  opt.do.res_orig  = false;  end
-if ~isfield(opt.do,'real_mni'),  opt.do.real_mni  = false;  end
-if ~isfield(opt.do,'crop'),      opt.do.crop      = false;  end
-if ~isfield(opt.do,'coreg'),     opt.do.coreg     = false;  end
-if ~isfield(opt.do,'denoise'),   opt.do.denoise   = false;  end
-if ~isfield(opt.do,'superres'),  opt.do.superres  = false;  end
-if ~isfield(opt.do,'reslice'),   opt.do.reslice   = false;  end
-if ~isfield(opt.do,'vx'),        opt.do.vx        = false;  end
-if ~isfield(opt.do,'write2d'),   opt.do.write2d   = false;  end
-if ~isfield(opt.do,'writemat'),  opt.do.writemat  = false;  end
-if ~isfield(opt.do,'segment'),   opt.do.segment   = false;  end
-if ~isfield(opt.do,'normalise'), opt.do.normalise = false;  end
-if ~isfield(opt.do,'go2native'), opt.do.go2native = true;   end
+if ~isfield(opt,'do'),             opt.do             = struct; end
+if ~isfield(opt.do,'res_orig'),    opt.do.res_orig    = false;  end
+if ~isfield(opt.do,'real_mni'),    opt.do.real_mni    = false;  end
+if ~isfield(opt.do,'nm_reorient'), opt.do.nm_reorient = false;  end
+if ~isfield(opt.do,'crop'),        opt.do.crop        = false;  end
+if ~isfield(opt.do,'coreg'),       opt.do.coreg       = false;  end
+if ~isfield(opt.do,'denoise'),     opt.do.denoise     = false;  end
+if ~isfield(opt.do,'superres'),    opt.do.superres    = false;  end
+if ~isfield(opt.do,'reslice'),     opt.do.reslice     = false;  end
+if ~isfield(opt.do,'vx'),          opt.do.vx          = false;  end
+if ~isfield(opt.do,'write2d'),     opt.do.write2d     = false;  end
+if ~isfield(opt.do,'writemat'),    opt.do.writemat    = false;  end
+if ~isfield(opt.do,'segment'),     opt.do.segment     = false;  end
+if ~isfield(opt.do,'normalise'),   opt.do.normalise   = false;  end
+if ~isfield(opt.do,'go2native'),   opt.do.go2native   = true;   end
 % Output directory
-if ~isfield(opt,'dir_out'),     opt.dir_out   = 'output';    end
-if ~isfield(opt,'dir_out2d'),   opt.dir_out2d = opt.dir_out; end
+if ~isfield(opt,'dir_out'),   opt.dir_out   = 'output';    end
+if ~isfield(opt,'dir_out2d'), opt.dir_out2d = opt.dir_out; end
 % Labels options
 if ~isfield(opt,'labels'),      opt.labels      = struct; end
 if ~isfield(opt.labels,'part'), opt.labels.part = [];      end
 % coreg options
-if ~isfield(opt,'coreg'),       opt.coreg     = struct; end
-if ~isfield(opt.coreg,'ref'),   opt.coreg.ref = 1;      end
+if ~isfield(opt,'coreg'),     opt.coreg     = struct; end
+if ~isfield(opt.coreg,'ref'), opt.coreg.ref = 1;      end
 % crop options
 if ~isfield(opt,'crop'),           opt.crop           = struct; end
 if ~isfield(opt.crop,'keep_neck'), opt.crop.keep_neck = true;      end
@@ -35,9 +36,9 @@ if ~isfield(opt,'reslice'),     opt.reslice     = struct; end
 if ~isfield(opt.reslice,'ref'), opt.reslice.ref = 1;      end
 if ~isfield(opt.reslice,'deg'), opt.reslice.deg = 1;      end
 % Voxel size options
-if ~isfield(opt,'vx'),          opt.vx      = struct; end
-if ~isfield(opt.vx,'size'),     opt.vx.size = 1;      end
-if ~isfield(opt.vx,'deg'),      opt.vx.deg  = 1;      end
+if ~isfield(opt,'vx'),      opt.vx      = struct; end
+if ~isfield(opt.vx,'size'), opt.vx.size = 1;      end
+if ~isfield(opt.vx,'deg'),  opt.vx.deg  = 1;      end
 % 2D options
 if ~isfield(opt,'write2d'),         opt.write2d         = struct; end
 if ~isfield(opt.write2d,'deg'),     opt.write2d.deg     = 0;      end
