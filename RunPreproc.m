@@ -54,6 +54,11 @@ if numel(Nii) > 1
     Nii = collapse_labels(Nii,opt.labels.part);    
 end
 
+if opt.do.erode
+    % Remove a few of the outer voxels
+    Nii = erode_im(Nii);
+end
+
 M    = cell(1,C);
 M(:) = {eye(4)};
 if opt.do.res_orig

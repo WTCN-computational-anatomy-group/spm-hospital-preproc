@@ -14,6 +14,7 @@ if ~isfield(opt.do,'write2d'),     opt.do.write2d     = false;  end
 if ~isfield(opt.do,'writemat'),    opt.do.writemat    = false;  end
 if ~isfield(opt.do,'segment'),     opt.do.segment     = false;  end
 if ~isfield(opt.do,'normalise'),   opt.do.normalise   = false;  end
+if ~isfield(opt.do,'erode'),       opt.do.erode       = false;  end
 if ~isfield(opt.do,'go2native'),   opt.do.go2native   = true;   end
 % Output directory
 if ~isfield(opt,'dir_out'),   opt.dir_out   = 'output';    end
