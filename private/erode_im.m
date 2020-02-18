@@ -8,7 +8,7 @@ for n=1:N
     bmsk = im ~= 0 & isfinite(im);
     
     % Erode
-    se    = strel('cube',4);
+    se    = strel('sphere',3);
     ebmsk = imerode(bmsk, se);
     ebmsk = ebmsk > 0;
     

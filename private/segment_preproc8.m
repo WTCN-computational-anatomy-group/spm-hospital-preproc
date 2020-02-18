@@ -8,6 +8,8 @@ write_df = opt.write_df;
 dir_out  = opt.dir_out;
 make_4d  = opt.make_4d;
 
+if ~isempty(dir_out) && ~isfolder(dir_out), mkdir(dir_out); end
+
 K = 6;             % Number of tissue classes
 N = numel(Nii{1}); % Number of channels
 V = spm_vol;
@@ -94,9 +96,9 @@ if isempty(dir_out)
 end
    
 [~,nam] = fileparts(V(1).fname);
-pths    = cell(1,6);
+pths    = cell(1,8);
 prefix  = {['c[1-6]' nam],['rc[1-6]' nam],['wc[1-6]' nam], ...
-           ['mwc[1-6]' nam],['y_' nam],['iy_' nam]};
+           ['mwc[1-6]' nam],['y_' nam],['iy_' nam],['m' nam],['BiasField_' nam]};
 for i=1:numel(prefix)
     files   = spm_select('List',dir_out,['^' prefix{i} '.*\.nii$']);
     if ~isempty(files)

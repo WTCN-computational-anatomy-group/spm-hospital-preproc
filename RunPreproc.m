@@ -114,21 +114,42 @@ else
     end
 end
 
-if numel(Nii) > 1 && (opt.do.nm_reorient || opt.do.crop || opt.do.superres || opt.do.vx || opt.do.reslice)
-    % Reslice labels
-    Nii = reslice_labels(Nii,opt.reslice);
-end
-
 pth_seg = {};
 if opt.do.segment
     % Run SPM12 segmentation
     pth_seg = segment_preproc8(Nii,opt.segment);
 end
 
+if opt.do.bfcorr
+    % Bias field correct (depends on segment_preproc8())
+    Nii = bf_correct(Nii,pth_seg);
+end
+
+if opt.do.skullstrip
+    % Skull-strip (depends on segment_preproc8())
+    Nii = skull_strip(Nii,pth_seg);
+    for k=1:numel(pth_seg{1}), delete(pth_seg{1}{k}); end
+end
+
+if ~isempty(opt.pth_template) && isfile(opt.pth_template)
+    % Reslice and affinely register images to a template
+    [Nii,M] = reslice2template(Nii,M,opt.pth_template);
+end
+
+if numel(Nii) > 1 && (opt.do.nm_reorient || opt.do.crop || opt.do.superres || opt.do.vx || opt.do.reslice)
+    % Reslice labels
+    Nii = reslice_labels(Nii,opt.reslice);
+end
+
 pth_norm = {};
 if opt.do.normalise
     % Create normalised versions of Nii
     pth_norm = make_normalised(Nii,opt.normalise);
+end
+
+if opt.do.int_norm
+    % Normalise image intensities in the range opt.int_norm.rng
+    Nii = intensity_normalise(Nii,opt.int_norm);
 end
 
 P2d = {};

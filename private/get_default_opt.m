@@ -15,10 +15,16 @@ if ~isfield(opt.do,'writemat'),    opt.do.writemat    = false;  end
 if ~isfield(opt.do,'segment'),     opt.do.segment     = false;  end
 if ~isfield(opt.do,'normalise'),   opt.do.normalise   = false;  end
 if ~isfield(opt.do,'erode'),       opt.do.erode       = false;  end
+if ~isfield(opt.do,'skullstrip'),  opt.do.skullstrip  = false;  end
+if ~isfield(opt.do,'bfcorr'),      opt.do.bfcorr      = false;  end
+if ~isfield(opt.do,'int_norm'),    opt.do.int_norm    = false;  end
 if ~isfield(opt.do,'go2native'),   opt.do.go2native   = true;   end
 % Output directory
 if ~isfield(opt,'dir_out'),   opt.dir_out   = 'output';    end
 if ~isfield(opt,'dir_out2d'), opt.dir_out2d = opt.dir_out; end
+% int_norm options
+if ~isfield(opt,'int_norm'),     opt.int_norm    = struct; end
+if ~isfield(opt.int_norm,'rng'), opt.int_norm.rng = [0 1]; end
 % Labels options
 if ~isfield(opt,'labels'),      opt.labels      = struct; end
 if ~isfield(opt.labels,'part'), opt.labels.part = [];      end
@@ -56,4 +62,21 @@ if ~isfield(opt.segment,'mask'),     opt.segment.mask     = false;  end
 if ~isfield(opt,'normalise'),      opt.normalise      = struct; end
 if ~isfield(opt.normalise,'mask'), opt.normalise.mask = false;  end
 if ~isfield(opt.normalise,'vol'),  opt.normalise.vol  = 1;      end
+% Path to template (good for using, e.g., VoxelMorph)
+if ~isfield(opt,'pth_template'),   opt.pth_template = []; end
+
+if opt.do.segment
+    warning('OBS: Not writing segmentations, because opt.do.skullstrip || opt.do.bfcorr'); 
+end
+
+if opt.do.skullstrip || opt.do.bfcorr    
+    opt.do.segment = true;
+    if opt.do.bfcorr
+        opt.segment.write_bf = [false true];
+    end
+    if opt.do.skullstrip
+        opt.segment.write_tc        = false(6,4);
+        opt.segment.write_tc(1:3,1) = true;
+    end
+end
 %==========================================================================
