@@ -18,17 +18,25 @@ for n=1:N
     y = Affine(Vr.dim,Mn);
     
     intrp = [4 4 4 0 0 0];
-    im = single(Nii{1}(n).dat());
-    c  = spm_diffeo('bsplinc',im,intrp);
-    im = spm_diffeo('bsplins',c,y,intrp);
+    im    = single(Nii{1}(n).dat());
+    mn    = min(im(:));
+    mx    = max(im(:));
+    c     = spm_diffeo('bsplinc',im,intrp);
+    im    = spm_diffeo('bsplins',c,y,intrp);
+    im    = min(mx, max(mn, im));
     
     [pth,nam,ext] = fileparts(f);
     npth          = fullfile(pth,['rt' nam ext]);
     create_nii(npth,im,Vr.mat,'float32','resliced',...
-               Nii{1}(n).dat.offset,Nii{1}(n).dat.scl_slope,Nii{1}(n).dat.scl_inter);
+               Nii{1}(n).dat.offset,Nii{1}(n).dat.scl_slope,Nii{1}(n).dat.scl_inter);    
     
     Nii{1}(n) = nifti(npth);
     delete(f);
+    
+    if do_affinereg
+        npth = fullfile(pth,['R_' nam '.mat']);
+        save(npth,'Rn');
+    end
 end
 
 if numel(Nii) > 1
