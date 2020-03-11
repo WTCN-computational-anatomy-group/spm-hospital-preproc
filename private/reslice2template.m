@@ -23,6 +23,7 @@ for n=1:N
     mx    = max(im(:));
     c     = spm_diffeo('bsplinc',im,intrp);
     im    = spm_diffeo('bsplins',c,y,intrp);
+    im(~isfinite(im)) = 0;
     im    = min(mx, max(mn, im));
     
     [pth,nam,ext] = fileparts(f);

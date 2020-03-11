@@ -54,7 +54,9 @@ samp(samp == 0) = 1;
 img  = Nii.dat(:,:,:);
 mat0 = Nii.mat;
 dm0  = size(img);
-
+mn   = min(img(:));
+mx   = max(img(:));
+    
 % Output image properties
 vx            = sqrt(sum(mat0(1:3,1:3).^2));
 % samp(vx >= 1) = 1;
@@ -72,6 +74,8 @@ y1 = T(2,1)*x0 + T(2,2)*y0 + T(2,3)*z0 + T(2,4);
 z1 = T(3,1)*x0 + T(3,2)*y0 + T(3,3)*z0 + T(3,4);
 
 % Resample
-img                 = spm_bsplins(img,x1,y1,z1,[deg bc]);    
+img                 = spm_bsplinc(img, [deg bc]);
+img                 = spm_bsplins(img,x1,y1,z1, [deg bc]);    
 img(~isfinite(img)) = 0;
+img                 = min(mx, max(mn, img));
 %==========================================================================
