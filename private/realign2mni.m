@@ -1,5 +1,8 @@
-function [Nii,M] = realign2mni(Nii,M)
+function [Nii,M] = realign2mni(Nii,M,opt)
 fprintf('Realigning to MNI...')
+
+do_rigid = opt.rigid;
+
 N = numel(Nii{1});
 if nargin < 2
     M    = cell(1,N);
@@ -8,7 +11,7 @@ end
 R = cell(1,N);
 for n=1:N
     f         = Nii{1}(n).dat.fname;
-    R{n}      = rigid_align(f);
+    R{n}      = rigid_align(f,do_rigid);
     M{n}      = M{n}*R{n};
     Nii{1}(n) = nifti(f);
 end
@@ -28,7 +31,7 @@ fprintf('done!\n')
 %==========================================================================
 
 %==========================================================================
-function R = rigid_align(P)
+function R = rigid_align(P,do_rigid)
 % Reposition an image by affine aligning to MNI space and Procrustes adjustment
 % FORMAT rigid_align(P)
 % P - name of NIfTI image
@@ -37,6 +40,8 @@ function R = rigid_align(P)
 % OBS: Image will have the matrix in its header adjusted.
 %__________________________________________________________________________
 % Copyright (C) 2018 Wellcome Trust Centre for Neuroimaging
+
+if nargin < 2, do_rigid = true; end
 
 % Load tissue probability data
 tpm = fullfile(spm('dir'),'tpm','TPM.nii,');
@@ -63,7 +68,7 @@ Affine = spm_maff8(P,2,32,tpm,Affine,'mni'); % Heavily regularised
 Affine = spm_maff8(P,2,1 ,tpm,Affine,'mni'); % Lightly regularised
 
 % Load header
-Nii    = nifti(P);
+Nii = nifti(P);
 
 % Generate mm coordinates of where deformations map from
 x      = affind(rgrid(size(tpm.dat{1})),tpm.M);
@@ -75,13 +80,19 @@ y1     = affind(x,inv(Affine));
 weight = single(exp(tpm.dat{1})+exp(tpm.dat{2}));
 
 % Weighted Procrustes analysis
-[~,R]  = spm_get_closest_affine(x,y1,weight);
+[Affine,R]  = spm_get_closest_affine(x,y1,weight);
+    
+if do_rigid
+    M = R;
+else
+    M = Affine;
+end
 
 % Invert
 % R      = inv(R);
 
 % Write the new matrix to the header
-Nii.mat = R\Nii.mat;
+Nii.mat = M\Nii.mat;
 create(Nii);
 %==========================================================================
 

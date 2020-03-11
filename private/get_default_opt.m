@@ -27,7 +27,10 @@ if ~isfield(opt,'int_norm'),     opt.int_norm    = struct; end
 if ~isfield(opt.int_norm,'rng'), opt.int_norm.rng = [0 1]; end
 % Labels options
 if ~isfield(opt,'labels'),      opt.labels      = struct; end
-if ~isfield(opt.labels,'part'), opt.labels.part = [];      end
+if ~isfield(opt.labels,'part'), opt.labels.part = [];     end
+% realign2mni options
+if ~isfield(opt,'realign2mni'),       opt.realign2mni       = struct; end
+if ~isfield(opt.realign2mni,'rigid'), opt.realign2mni.rigid = true;   end
 % coreg options
 if ~isfield(opt,'coreg'),     opt.coreg     = struct; end
 if ~isfield(opt.coreg,'ref'), opt.coreg.ref = 1;      end

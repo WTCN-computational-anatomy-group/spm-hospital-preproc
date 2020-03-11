@@ -68,7 +68,7 @@ end
 
 if opt.do.real_mni
     % Realing to MNI space
-    [Nii,M] = realign2mni(Nii,M);
+    [Nii,M] = realign2mni(Nii,M,opt.realign2mni);
 end
 
 if opt.do.nm_reorient
