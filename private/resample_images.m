@@ -1,16 +1,30 @@
 function Nii = resample_images(Nii,opt)
 
-vx  = opt.size;
-deg = opt.deg;
+vx      = opt.size;
+deg     = opt.deg;
+min_1mm = opt.min_1mm;
+vx      = vx(1)*ones(1,3);
 
 fprintf('Changing voxel-sizes...')
 N = numel(Nii{1});
 
 for n=1:N
     samp = sqrt(sum(Nii{1}(n).mat(1:3,1:3).^2));
+    if min_1mm
+        samp(samp < 1) = 1;
+        vx(samp < 1) = 1;
+    end
     samp = samp./vx;
     
-    [img,dm,mat] = resample_img(Nii{1}(n),samp,deg);
+    if all(samp == 1)
+        img = Nii{1}(n).dat();
+        dm = size(img);
+        dm = [dm 1];
+        dm = dm(1:3);
+        mat = Nii{1}(n).mat;
+    else
+        [img,dm,mat] = resample_img(Nii{1}(n),samp,deg);
+    end
     
     % New Nii
     f             = Nii{1}(n).dat.fname;
@@ -58,11 +72,9 @@ mn   = min(img(:));
 mx   = max(img(:));
     
 % Output image properties
-vx            = sqrt(sum(mat0(1:3,1:3).^2));
-% samp(vx >= 1) = 1;
-D             = diag([samp 1]);
-mat           = mat0/D;
-dm            = floor(D(1:3,1:3)*dm0')';
+D   = diag([samp 1]);
+mat = mat0/D;
+dm  = floor(D(1:3,1:3)*dm0')';
 
 % Make interpolation grid
 [x0,y0,z0] = ndgrid(1:dm(1),1:dm(2),1:dm(3));

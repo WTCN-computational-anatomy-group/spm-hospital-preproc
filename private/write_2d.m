@@ -106,7 +106,7 @@ elseif axis_2d == 2
     bb = [-inf inf;sliceix sliceix;-inf inf];
 elseif axis_2d == 3
     if isempty(sliceix) 
-        sliceix = round(dm(3) - 95);
+        sliceix = round(dm(3)/2);
     end
     bb = [-inf inf;-inf inf;sliceix sliceix];
 end                
@@ -118,20 +118,21 @@ subvol(V,bb','sv',deg);
 nfname        = fullfile(pth,['sv' nam ext]);  
 delete(fname);
     
-if axis_2d == 1 || axis_2d == 2
+% if axis_2d == 1 || axis_2d == 2
     % Make sure 1D plane is in z dimension
     Nii  = nifti(nfname);
-    mat  = Nii.mat;
+    mat  = eye(4);%Nii.mat;
+    img  = squeeze(Nii.dat(:,:,:));
     
-    % Permute image data and apply permutation matrix to orientation matrix
-    if axis_2d == 1
-        img = permute(Nii.dat(:,:,:),[2 3 1]);            
-        P   = [0 1 0 0; 0 0 1 0; 1 0 0 0; 0 0 0 1];
-    else
-        img = permute(Nii.dat(:,:,:),[1 3 2]);        
-        P   = [1 0 0 0; 0 0 1 0; 0 1 0 0; 0 0 0 1];
-    end   
-    mat     = P*mat*P';
+%     % Permute image data and apply permutation matrix to orientation matrix
+%     if axis_2d == 1
+%         img = permute(Nii.dat(:,:,:),[2 3 1]);            
+%         P   = [0 1 0 0; 0 0 1 0; 1 0 0 0; 0 0 0 1];
+%     else
+%         img = permute(Nii.dat(:,:,:),[1 3 2]);        
+%         P   = [1 0 0 0; 0 0 1 0; 0 1 0 0; 0 0 0 1];
+%     end   
+%     mat     = P*mat*P';
     dm      = [size(img) 1];
     
     % Overwrite image data
@@ -141,5 +142,5 @@ if axis_2d == 1 || axis_2d == 2
     VO             = spm_create_vol(VO);        
     Nii            = nifti(VO.fname);    
     Nii.dat(:,:,:) = img; 
-end
+% end
 %==========================================================================
