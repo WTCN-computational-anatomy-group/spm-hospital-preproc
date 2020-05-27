@@ -63,7 +63,11 @@ M    = cell(1,C);
 M(:) = {eye(4)};
 if opt.do.res_orig
     % Reset origin (important for CT)
-    [Nii,M] = reset_origin(Nii);
+    vx = [];
+    if ~opt.do.superres && opt.do.vx
+        vx = opt.vx.size;
+    end
+    [Nii,M] = reset_origin(Nii, vx);
 end
 
 if opt.do.real_mni
@@ -103,7 +107,7 @@ if opt.do.superres
     % Coreg (one more time after super-resolving)
     Nii = coreg(Nii,opt.coreg);
 else
-    if opt.do.vx
+    if opt.do.vx && ~opt.do.res_orig
         % Set same voxel size
         Nii = resample_images(Nii,opt.vx);
     end
@@ -136,7 +140,7 @@ if ~isempty(opt.pth_template) && isfile(opt.pth_template)
     [Nii,M] = reslice2template(Nii,M,opt.pth_template);
 end
 
-if numel(Nii) > 1 && (opt.do.nm_reorient || opt.do.crop || opt.do.superres || opt.do.vx || opt.do.reslice || (~isempty(opt.pth_template) && isfile(opt.pth_template)))
+if numel(Nii) > 1 && (opt.do.nm_reorient || opt.do.crop || opt.do.superres || opt.do.vx || (opt.do.vx && opt.do.res_orig) || opt.do.reslice || (~isempty(opt.pth_template) && isfile(opt.pth_template)))
     % Reslice labels
     Nii = reslice_labels(Nii,opt.reslice);
 end

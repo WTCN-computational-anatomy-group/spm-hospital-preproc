@@ -34,8 +34,8 @@ for V=VV' % Loop over images
     vx0 = sqrt(sum(V.mat(1:3,1:3).^2));
     if isempty(vx)
         vx = vx0;
-    else
-        vx(vx0 > 1) = vx0(vx0 > 1);
+%     else
+%         vx(vx0 > 1) = vx0(vx0 > 1);
     end    
     
     % Translate so that minimum moves to [1,1,1]
