@@ -118,6 +118,11 @@ else
     end
 end
 
+if opt.do.bb_spm
+    % Crop to SPM12 BB
+    Nii = apply_bb(Nii);
+end
+
 pth_seg = {};
 if opt.do.segment
     % Run SPM12 segmentation

@@ -18,6 +18,7 @@ if ~isfield(opt.do,'erode'),       opt.do.erode       = false;  end
 if ~isfield(opt.do,'skullstrip'),  opt.do.skullstrip  = false;  end
 if ~isfield(opt.do,'bfcorr'),      opt.do.bfcorr      = false;  end
 if ~isfield(opt.do,'int_norm'),    opt.do.int_norm    = false;  end
+if ~isfield(opt.do,'bb_spm'),      opt.do.bb_spm      = false;  end
 if ~isfield(opt.do,'go2native'),   opt.do.go2native   = true;   end
 % Output directory
 if ~isfield(opt,'dir_out'),   opt.dir_out   = 'output';    end
@@ -36,7 +37,7 @@ if ~isfield(opt,'coreg'),     opt.coreg     = struct; end
 if ~isfield(opt.coreg,'ref'), opt.coreg.ref = 1;      end
 % crop options
 if ~isfield(opt,'crop'),           opt.crop           = struct; end
-if ~isfield(opt.crop,'keep_neck'), opt.crop.keep_neck = true;      end
+if ~isfield(opt.crop,'keep_neck'), opt.crop.keep_neck = true;   end
 % superres options
 if ~isfield(opt,'superres'),         opt.superres         = struct; end
 if ~isfield(opt.superres,'ix'),      opt.superres.ix      = [];     end
