@@ -33,7 +33,7 @@ if isempty(fileparts(which('spm')))
 end
 if opt.do.denoise || opt.do.superres
     if isempty(fileparts(which('spm_superres')))
-        error('diffeo-segment not on the MATLAB path!');  % download/clone from https://github.com/brudfors/spm_superres
+        error('spm_superres not on the MATLAB path!');  % download/clone from https://github.com/brudfors/spm_superres
     end
 end
 
