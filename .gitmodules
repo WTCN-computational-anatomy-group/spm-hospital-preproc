@@ -1,3 +1,0 @@
-[submodule "spm_superres"]
-	path = spm_superres
-	url = git@github.com:brudfors/spm_superres.git
