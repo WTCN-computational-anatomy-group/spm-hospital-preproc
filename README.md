@@ -68,7 +68,7 @@ data = nifti('MRI.nii');  % Give MRI nifti here
 % Set preprocessing options
 opt            = struct;    
 opt.dir_out    = 'output'; % Output directory
-opt.do.denoise = true;     % Enabel denoising
+opt.do.denoise = true;     % Enabla denoising
     
 % Run preprocessing
 RunPreproc(data, opt);
