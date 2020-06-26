@@ -50,7 +50,6 @@ if ~isfield(opt.reslice,'deg'), opt.reslice.deg = 1;      end
 if ~isfield(opt,'vx'),         opt.vx          = struct; end
 if ~isfield(opt.vx,'size'),    opt.vx.size     = 1;      end
 if ~isfield(opt.vx,'deg'),     opt.vx.deg      = 1;      end
-if ~isfield(opt.vx,'min_1mm'), opt.vx.min_1mm  = true;   end
 % 2D options
 if ~isfield(opt,'write2d'),         opt.write2d         = struct; end
 if ~isfield(opt.write2d,'deg'),     opt.write2d.deg     = 0;      end

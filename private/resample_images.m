@@ -1,20 +1,15 @@
 function Nii = resample_images(Nii,opt)
 
-vx      = opt.size;
+vx_out  = opt.size;
 deg     = opt.deg;
-min_1mm = opt.min_1mm;
-vx      = vx(1)*ones(1,3);
+vx_out  = vx_out(1)*ones(1,3);
 
 fprintf('Changing voxel-sizes...')
 N = numel(Nii{1});
 
 for n=1:N
-    samp = sqrt(sum(Nii{1}(n).mat(1:3,1:3).^2));
-    if min_1mm
-        samp(samp < 1) = 1;
-        vx(samp < 1) = 1;
-    end
-    samp = samp./vx;
+    vx_in = sqrt(sum(Nii{1}(n).mat(1:3,1:3).^2));
+    samp = vx_in./vx_out;
     
     if all(samp == 1)
         img = Nii{1}(n).dat();
