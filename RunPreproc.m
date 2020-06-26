@@ -118,11 +118,6 @@ else
     end
 end
 
-if opt.do.bb_spm
-    % Crop to SPM12 BB
-    Nii = apply_bb(Nii);
-end
-
 pth_seg = {};
 if opt.do.segment
     % Run SPM12 segmentation
@@ -138,6 +133,11 @@ if opt.do.skullstrip
     % Skull-strip (depends on segment_preproc8())
     Nii = skull_strip(Nii,pth_seg);
     for k=1:numel(pth_seg{1}), delete(pth_seg{1}{k}); end
+end
+
+if opt.do.bb_spm
+    % Crop to SPM12 BB
+    Nii = apply_bb(Nii);
 end
 
 if ~isempty(opt.pth_template) && isfile(opt.pth_template)
