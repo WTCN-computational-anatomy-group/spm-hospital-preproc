@@ -109,7 +109,7 @@ end
 % super-resolution, or by just simply reslicing
 if opt.do.superres
     % Super-resolve
-    Nii = superres(Nii,opt.superres);
+    Nii = superres(Nii,opt.do.coreg,opt.superres);
     
     % Coreg (one more time after super-resolving)
     Nii = coreg(Nii,opt.coreg);
@@ -123,6 +123,11 @@ else
         % Make images same dimensions
         [Nii,M] = reslice_images(Nii,M,opt.reslice);
     end
+end
+
+if opt.do.bb_spm
+    % Crop to SPM12 BB
+    Nii = apply_bb(Nii);
 end
 
 pth_seg = {};
@@ -140,11 +145,6 @@ if opt.do.skullstrip
     % Skull-strip (depends on segment_preproc8())
     Nii = skull_strip(Nii,pth_seg);
     for k=1:numel(pth_seg{1}), delete(pth_seg{1}{k}); end
-end
-
-if opt.do.bb_spm
-    % Crop to SPM12 BB
-    Nii = apply_bb(Nii);
 end
 
 if ~isempty(opt.pth_template) && isfile(opt.pth_template)

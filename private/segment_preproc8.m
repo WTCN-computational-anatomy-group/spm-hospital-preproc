@@ -110,7 +110,7 @@ for i=1:numel(prefix)
 end
 
 K = numel(pths{1});
-if K> 0 && K < 6
+if make_4d && (K> 0 && K < 6)
     % Make background class
     Nii_seg = nifti;
     for k=1:K

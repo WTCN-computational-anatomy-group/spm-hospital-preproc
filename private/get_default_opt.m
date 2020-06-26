@@ -69,7 +69,12 @@ if ~isfield(opt.normalise,'vol'),  opt.normalise.vol  = 1;      end
 % Path to template (good for using, e.g., VoxelMorph)
 if ~isfield(opt,'pth_template'),   opt.pth_template = []; end
 
-if opt.do.segment
+if opt.do.bb_spm
+    % Cropping to SPM12 atlas requires aligning input to MNI
+    opt.do.real_mni = true;
+end
+
+if opt.do.segment && (opt.do.skullstrip || opt.do.bfcorr)
     warning('OBS: Not writing segmentations, because opt.do.skullstrip || opt.do.bfcorr'); 
 end
 

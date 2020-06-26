@@ -1,7 +1,11 @@
-function Nii = superres(Nii,opt)
+function Nii = superres(Nii,CoRegDone,opt)
 
 ix      = opt.ix;
 Verbose = opt.Verbose;
+DoCoreg = true;
+if CoRegDone
+    DoCoreg = false;
+end
 
 fprintf('Super-resolving...')
 
@@ -20,7 +24,7 @@ if ~isempty(ix)
         end
     end
     
-    oNii = do_superres(P,Verbose);
+    oNii = do_superres(P,Verbose,DoCoreg);
     
     N = numel(Nii{1});
     for n=1:N         
@@ -37,7 +41,7 @@ else
         P{c} = Nii{1}(c).dat.fname;
     end
     
-    do_superres(P,Verbose);
+    do_superres(P,Verbose,DoCoreg);
     
     N = numel(Nii{1});
     for n=1:N         
@@ -54,40 +58,12 @@ fprintf('done!\n')
 %==========================================================================
 
 %==========================================================================
-function oNii = do_superres(P,Verbose)
-% CoRegister          = false;    
-% WorkersParfor       = Inf;
-% Method              = 'superres';
-% RegScaleSuperResMRI = 4;
-% ReadWrite           = false;
-% SliceGap            = 0;
-% DecreasingReg       = true;
-% IterMax             = 12;
-% IterImage           = 3;
-% ZeroMissingValues   = false;
-% 
-% if iscell(Nii)
-%     pth = fileparts(Nii{1}(1).dat.fname);
-% else
-%     pth = fileparts(Nii(1).dat.fname);
-% end
-% OutputDirectory = pth;
-% 
-% fun_args = {'InputImages',Nii, ...
-%             'Method',Method, ...
-%             'Verbose',Verbose, ...
-%             'RegScaleSuperResMRI',RegScaleSuperResMRI, ...
-%             'ReadWrite',ReadWrite, ...
-%             'SliceGap',SliceGap, ...
-%             'CoRegister',CoRegister, ...
-%             'DecreasingReg',DecreasingReg, ...
-%             'IterMax',IterMax, ...
-%             'WorkersParfor',WorkersParfor, ...
-%             'OutputDirectory',OutputDirectory, ...
-%             'ZeroMissingValues',ZeroMissingValues, ...
-%             'IterImage',IterImage};
-            
-opt.DoCoReg = false;
-
+function oNii = do_superres(P,Verbose,DoCoReg)
+% Options
+opt = struct;
+opt.DoCoReg = DoCoReg;
+% opt.IterMax = 1;  % Uncomment for testing
+opt.Verbose = Verbose;
+% Run
 oNii = spm_superres(P,opt);
 %==========================================================================
