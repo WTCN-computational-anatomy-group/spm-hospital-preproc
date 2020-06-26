@@ -8,7 +8,7 @@ The algorithm requires that the following package is on the MATLAB path:
 * **SPM12:** Download from https://www.fil.ion.ucl.ac.uk/spm/software/spm12.
 * **spm_superres:** Download/clone from https://github.com/brudfors/spm_superres (if you want to use the denoising or super-resolution options).
 
-## Use cases
+## Example use cases
 
 ### 1. Multi-channel MRI segmentation
 
