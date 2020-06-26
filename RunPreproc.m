@@ -27,8 +27,15 @@ end
 if nargin < 2, opt = struct; end
 opt = get_default_opt(opt);
 
-% Add MTV toolbox to path
-addpath(fullfile(fileparts(mfilename('fullpath')),'spm_superres'));
+% Check MATLAB path
+if isempty(fileparts(which('spm')))      
+    error('SPM12 not on the MATLAB path!');  % download from https://www.fil.ion.ucl.ac.uk/spm/software/download/
+end
+if opt.do.denoise || opt.do.superres
+    if isempty(fileparts(which('spm_superres')))
+        error('diffeo-segment not on the MATLAB path!');  % download/clone from https://github.com/brudfors/spm_superres
+    end
+end
 
 % Because it is possible to include labels, in the second index of Nii 
 % (i.e. Nii{2})
