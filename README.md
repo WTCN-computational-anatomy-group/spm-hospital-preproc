@@ -73,7 +73,7 @@ RunPreproc(data, opt);
 
 ### 4. Multi-channel MRI super-resolution (requires spm_superres)
 
-This MATLAB snippet that takes as input thick-sliced, multi-channel MR images and applies a super-resolution routine to it [1], producing 1 mm isotropic images on the same grid.
+This MATLAB snippet that takes as input thick-sliced, multi-channel MR images and applies a super-resolution routine to it [1]; producing 1 mm isotropic images on the same grid.
 ```
 % Paths to multi-channel images
 pth_img = {'MRI_T1w.nii', 'MRI_T2w.nii', 'MRI_PDw.nii'};  % Paths to image data nifti files as cell array
