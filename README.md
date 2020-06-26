@@ -1,6 +1,6 @@
 # Patient-Preprocessing
 
-This is MATLAB code for various neuroimaging preprocessing operations (registration, reslicing, denoising, segmentation, etc.), which was originally intended for processing routine clinical data (hence the name). It takes as input nifti files and produces copies of this data to which the requested preprocessing steps are applied. It additionally handles image data with paired label masks (e.g., a T1w MRI and a tumour mask (or multiple classes)), and makes sure that the resulting preprocessed data is consistent. See below for some example use cases, which could be run stand-alone or be inspiration for more complicated preprocessing tasks.
+This is MATLAB code for various neuroimaging preprocessing operations (registration, reslicing, denoising, segmentation, etc.), which was originally intended for processing routine clinical data (hence the name) [1]. It takes as input nifti files and produces copies of this data to which the requested preprocessing steps are applied. It additionally handles image data with paired label masks (e.g., a T1w MRI and a tumour mask (or multiple classes)), and makes sure that the resulting preprocessed data is consistent. See below for some example use cases, which could be run stand-alone or be inspiration for more complicated preprocessing tasks.
 
 ## Dependencies
 
@@ -60,7 +60,7 @@ RunPreproc(data, opt);
 
 ### 3. MRI denoising (requires spm_superres)
 
-This MATLAB snippet takes as input an MR image and applies a total variation denoising routine to it [1].
+This MATLAB snippet takes as input an MR image and applies a total variation denoising routine to it [2].
 ```
 % Format input
 data = nifti('MRI.nii');  % Give MRI nifti here
@@ -76,7 +76,7 @@ RunPreproc(data, opt);
 
 ### 4. Multi-channel MRI super-resolution (requires spm_superres)
 
-This MATLAB snippet takes as input thick-sliced, multi-channel MR images and applies a super-resolution routine to it [1]; producing 1 mm isotropic images on the same grid.
+This MATLAB snippet takes as input thick-sliced, multi-channel MR images and applies a super-resolution routine to it [2]; producing 1 mm isotropic images on the same grid.
 ```
 % Paths to multi-channel images
 pth_img = {'MRI_T1w.nii', 'MRI_T2w.nii', 'MRI_PDw.nii'};  % Paths to image data nifti files as cell array
@@ -95,14 +95,14 @@ RunPreproc(data, opt);
 
 ## References
 
-1. Brudfors M, Balbastre Y, Nachev P, Ashburner J.
+1. Brudfors, M. (2020). 
+Generative Models for Preprocessing of Hospital Brain Scans.
+Doctoral dissertation, UCL (University College London).
+
+2. Brudfors M, Balbastre Y, Nachev P, Ashburner J.
 MRI Super-Resolution Using Multi-channel Total Variation.
 In Annual Conference on Medical Image Understanding and Analysis
 2018 Jul 9 (pp. 217-228). Springer, Cham.    
-
-2. Brudfors, M. (2020). 
-Generative Models for Preprocessing of Hospital Brain Scans.
-Doctoral dissertation, UCL (University College London).
 
 ## License
 
