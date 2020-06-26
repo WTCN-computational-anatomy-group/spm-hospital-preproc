@@ -12,7 +12,7 @@ The algorithm requires that the following package is on the MATLAB path:
 
 ### 1. Multi-channel MRI segmentation
 
-This MATLAB snippet that takes as input MR images of multiple sequences and produces images that have been co-registered and resliced. These images are then segmented using the SPM12 unified segmentation routine and outputs are written.
+This MATLAB snippet that takes as input MR images of multiple sequences and produces images that have been co-registered and resliced. These images are then segmented using the SPM12 unified segmentation routine and native+template (unmodulated) space GM, WM and CSF segmentations are written to disk.
 ```
 % Paths to multi-channel images
 pth_img = {'MRI_T1w.nii', 'MRI_T2w.nii', 'MRI_PDw.nii'};  % Paths to image data nifti files as cell array
@@ -27,7 +27,10 @@ opt.do.coreg    = true;     % Co-register using NMI
 opt.do.reslice  = true;     % Reslice to have same image grids
 opt.reslice.ref = 1;        % Reslice to image pth_img(1)
 opt.do.segment  = true;     % Enable unified segmentation
-    
+% Write GM, WM and CSF segmentations (in native and unmodulated template space)
+opt.segment.write_tc            = false(6,4);  
+opt.segment.write_tc(1:3,[1 3]) = true;
+
 % Run preprocessing
 RunPreproc(data, opt);
 ```
