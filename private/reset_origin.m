@@ -1,11 +1,15 @@
-function [Nii,M] = reset_origin(Nii,vx)
-if nargin < 2, vx = [];    end
+function [Nii,M] = reset_origin(Nii,only_neg,vx)
+if nargin < 3, vx = [];    end
 
 fprintf('Resetting origin...')
 N    = numel(Nii{1});
 M    = cell(1,N);
 M(:) = {eye(4)};
 for n=1:N
+    if only_neg && min(Nii{1}(n).dat(:)) >= 0
+        % No negative values, do not reset
+        continue
+    end
     f = Nii{1}(n).dat.fname;    
     f = nm_reorient(f,vx);
     
@@ -19,6 +23,11 @@ if numel(Nii) > 1
     for n=1:N
         if isempty(Nii{2}(n).dat), continue; end
         
+        if only_neg && min(Nii{1}(n).dat(:)) >= 0
+            % No negative values, do not reset
+            continue
+        end
+    
         f = Nii{2}(n).dat.fname;    
         f = nm_reorient(f,vx,'ro',0);
         do_reset_origin(f);
