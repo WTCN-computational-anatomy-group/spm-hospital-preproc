@@ -8,7 +8,9 @@ write_df = opt.write_df;
 dir_out  = opt.dir_out;
 make_4d  = opt.make_4d;
 
-if ~isempty(dir_out) && ~isfolder(dir_out), mkdir(dir_out); end
+if ~isempty(dir_out) && ~(exist(dir_out, 'dir') == 7)
+    mkdir(dir_out); 
+end
 
 K = 6;             % Number of tissue classes
 N = numel(Nii{1}); % Number of channels

@@ -1,9 +1,14 @@
-function out = RunPreproc(Nii,opt)
+function out = RunPreproc(paths,opt)
 % Some basic preprocessing of hospital neuroimaging data.
 %
 % INPUT
-% Nii - 1xC nifti struct (or empty to use file selector) of patient images
-% opt - Preprocessing options
+% paths - Can be given as:
+%            paths = im.ext, 
+%            paths = {im1.ext, ..., imN.ext}
+%            paths = {{im1.ext, ..., imN.ext}, 
+%                     {lab1.ext, ..., labN.ext}}
+%         where valid extensions are .nii and .nii.gz.          
+% opt   - Preprocessing options
 %
 % OUTPUT
 % out.pth.im    - Cell array of paths to preprocessed image(s)
@@ -19,10 +24,6 @@ function out = RunPreproc(Nii,opt)
 %_______________________________________________________________________
 %  Copyright (C) 2019 Wellcome Trust Centre for Neuroimaging
 
-if nargin == 0
-   Nii = nifti(spm_select(Inf,'nifti','Please select patient image(s)'));   
-end
-
 % Set options
 if nargin < 2, opt = struct; end
 opt = get_default_opt(opt);
@@ -37,13 +38,6 @@ if opt.do.denoise || opt.do.superres
     end
 end
 
-% Because it is possible to include labels, in the second index of Nii 
-% (i.e. Nii{2})
-if ~iscell(Nii)
-    Nii = {Nii};
-end
-C = numel(Nii{1});
-
 if ~(exist(opt.dir_out,'dir') == 7)  
     % Create output directory
     mkdir(opt.dir_out);  
@@ -54,7 +48,9 @@ s           = what(opt.dir_out);
 opt.dir_out = s.path;
 
 % Copy (so to not overwrite originals)
-Nii = make_copies(Nii,opt.dir_out);
+[Nii,was_gz] = read_and_copy(paths,opt.dir_out);
+
+C = numel(Nii{1});
 
 if numel(Nii) > 1
     % Collapse labels
@@ -188,43 +184,99 @@ for i=1:2
     for c=1:C
         if (i == 2 && numel(Nii) == 1) || isempty(Nii{i}(c).dat), continue; end
         
+        f = Nii{i}(c).dat.fname;
+        
         if i == 1
-            out.pth.im{c}  = Nii{i}(c).dat.fname;
+            out.mat{c} = M{c};
+        end  
+        
+        if i == 1
+            out.pth.im{c} = Nii{i}(c).dat.fname;
+            
+            if opt.do.go2native
+                p = out.pth.im{c};    
+                Mc = spm_get_space(p); 
+                spm_get_space(p,M{c}*Mc); 
+            end
+            
+            if was_gz == true
+                % Compress back to .gz
+                p = gzip(out.pth.im{c});
+                delete(out.pth.im{c});
+                out.pth.im{c} = p{1};                
+            end
         else
             out.pth.lab{c} = Nii{i}(c).dat.fname;
+            
+            if opt.do.go2native
+                p = out.pth.lab{c};    
+                Mc = spm_get_space(p); 
+                spm_get_space(p,M{c}*Mc); 
+            end
+            
+            if was_gz == true
+                % Compress back to .gz
+                p = gzip(out.pth.lab{c});
+                delete(out.pth.lab{c});
+                out.pth.lab{c} = p{1};                
+            end
         end
                             
         if ~isempty(pth_seg)
             out.pth.seg = pth_seg;
+            
+            if opt.do.go2native
+                for i1=1:numel(out.pth.seg{1})
+                    p = deblank(out.pth.seg{1}{i1});    
+                    Mc = spm_get_space(p); 
+                    spm_get_space(p,M{c}*Mc); 
+                end
+            end
+            
+            if was_gz == true
+                % Compress back to .gz
+                p = gzip(out.pth.seg);
+                delete(out.pth.seg);
+                out.pth.seg = p{1};                
+            end
         end
                             
         if ~isempty(pth_norm)
             out.pth.norm = pth_norm;
+            if was_gz == true
+                % Compress back to .gz
+                p = gzip(out.pth.norm);
+                delete(out.pth.norm);
+                out.pth.norm = p{1};                
+            end
         end
         
         if ~isempty(P2d)
             if i == 1
                 out.pth.im2d{c}  = P2d{i}{c};
+                if was_gz == true
+                    % Compress back to .gz
+                    p = gzip(oout.pth.im2d{c});
+                    delete(out.pth.im2d{c});
+                    out.pth.im2d{c} = p{1};                
+                end
             else
                 out.pth.lab2d{c} = P2d{i}{c};
+                if was_gz == true
+                    % Compress back to .gz
+                    p = gzip(out.pth.lab2d{c});
+                    delete(out.pth.lab2d{c});
+                    out.pth.lab2d{c} = p{1};                
+                end
             end
         end
         
         if opt.do.writemat
-            [pth,nam] = fileparts(P{i}{c});   
+            [pth,nam] = fileparts(f);   
             nP        = fullfile(pth,['mat' nam '.mat']);
             Mc        = M{c};
             save(nP,'Mc')
         end
-
-        if i == 1
-            out.mat{c} = M{c};
-        end  
     end
-end
-
-if opt.do.go2native
-    % Go back to native space orientation
-    go2native(out);
 end
 %==========================================================================
