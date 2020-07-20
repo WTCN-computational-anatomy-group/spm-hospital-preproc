@@ -93,6 +93,7 @@ This MATLAB snippet simply changes the voxel size of multiple image volumes (e.g
 dir_data = '/path/to/folder/with/images'; % Directory with images
 ext      = '.nii';                        % File extension of images
 prefix    = 'c';                          % Prefix of image filenames
+
 % Get paths and convert to cell array
 paths = spm_select('FPList',dir_data,['^' prefix '.*\' ext '$']);
 paths = paths(1:3, :);
