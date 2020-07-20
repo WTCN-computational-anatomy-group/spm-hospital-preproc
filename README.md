@@ -96,7 +96,6 @@ prefix    = 'c';                          % Prefix of image filenames
 
 % Get paths and convert to cell array
 paths = spm_select('FPList',dir_data,['^' prefix '.*\' ext '$']);
-paths = paths(1:3, :);
 paths = cellstr(paths);
 
 % Set preprocessing options
