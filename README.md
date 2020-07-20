@@ -85,6 +85,24 @@ opt.do.superres = true;     % Enable super-resolution
 RunPreproc(paths, opt);
 ```
 
+### 5. Changing voxel size
+
+This MATLAB snippet simply changes the voxel size of an image volume (e.g., MRI or tissue segmentation). The interpolation order can be changed, here nearest neigbour is used.
+```
+% Paths to image
+paths = img.nii;
+
+% Set preprocessing options
+opt         = struct;    
+opt.dir_out = 'output'; % Output directory
+opt.do.vx   = true;     % Enables changing the voxel size
+opt.vx.size = 3;        % What output voxel size?
+opt.vx.deg  = 0;        % What interpolation order (0: nearest neighbour)?
+
+% Run preprocessing
+RunPreproc(paths, opt);
+```
+
 ## References
 
 1. Brudfors, M. (2020). 
