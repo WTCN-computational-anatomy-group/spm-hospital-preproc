@@ -85,12 +85,18 @@ opt.do.superres = true;     % Enable super-resolution
 RunPreproc(paths, opt);
 ```
 
-### 5. Changing voxel size
+### 5. Changing the voxel size of a bunch of images
 
-This MATLAB snippet simply changes the voxel size of an image volume (e.g., MRI or tissue segmentation). The interpolation order can be changed, here nearest neigbour is used.
+This MATLAB snippet simply changes the voxel size of multiple image volumes (e.g., MRIs or tissue segmentations), assumed to be located in the same folder. The interpolation order can be changed, here nearest neigbour is used.
 ```
-% Paths to image
-paths = img.nii;
+% Path to images
+dir_data = '/path/to/folder/with/images'; % Directory with images
+ext      = '.nii';                        % File extension of images
+prefix    = 'c';                          % Prefix of image filenames
+
+% Get paths and convert to cell array
+paths = spm_select('FPList',dir_data,['^' prefix '.*\' ext '$']);
+paths = cellstr(paths);
 
 % Set preprocessing options
 opt         = struct;    
