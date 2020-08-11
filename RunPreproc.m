@@ -48,7 +48,7 @@ s           = what(opt.dir_out);
 opt.dir_out = s.path;
 
 % Copy (so to not overwrite originals)
-[Nii,was_gz] = read_and_copy(paths,opt.dir_out);
+[Nii,was_gz,nams] = read_and_copy(paths,opt.dir_out);
 
 C = numel(Nii{1});
 
@@ -193,6 +193,11 @@ for i=1:2
         if i == 1
             out.pth.im{c} = Nii{i}(c).dat.fname;
             
+            [pth,~,ext] = fileparts(out.pth.im{c});
+            nfname = fullfile(pth, [nams{1, c} ext]);
+            movefile(out.pth.im{c}, nfname);
+            out.pth.im{c} = nfname;
+            
             if opt.do.go2native
                 p = out.pth.im{c};    
                 Mc = spm_get_space(p); 
@@ -203,10 +208,15 @@ for i=1:2
                 % Compress back to .gz
                 p = gzip(out.pth.im{c});
                 delete(out.pth.im{c});
-                out.pth.im{c} = p{1};                
+                out.pth.im{c} = p{1};
             end
         else
             out.pth.lab{c} = Nii{i}(c).dat.fname;
+            
+            [pth,~,ext] = fileparts(out.pth.lab{c});
+            nfname = fullfile(pth, [nams{2, c} ext]);
+            movefile(out.pth.lab{c}, nfname);
+            out.pth.lab{c} = nfname;
             
             if opt.do.go2native
                 p = out.pth.lab{c};    
@@ -224,7 +234,7 @@ for i=1:2
                             
         if ~isempty(pth_seg)
             out.pth.seg = pth_seg;
-            
+                                  
             if opt.do.go2native
                 for i1=1:numel(out.pth.seg{1})
                     p = deblank(out.pth.seg{1}{i1});    
@@ -254,6 +264,12 @@ for i=1:2
         if ~isempty(P2d)
             if i == 1
                 out.pth.im2d{c}  = P2d{i}{c};
+                
+                [pth,~,ext] = fileparts(out.pth.im2d{c});
+                nfname = fullfile(pth, [nams{1, c} ext]);
+                movefile(out.pth.im2d{c}, nfname);
+                out.pth.im2d{c} = nfname;
+                
                 if was_gz == true
                     % Compress back to .gz
                     p = gzip(oout.pth.im2d{c});
@@ -262,6 +278,12 @@ for i=1:2
                 end
             else
                 out.pth.lab2d{c} = P2d{i}{c};
+                
+                [pth,~,ext] = fileparts(out.pth.lab2d{c});
+                nfname = fullfile(pth, [nams{2, c} ext]);
+                movefile(out.pth.lab2d{c}, nfname);
+                out.pth.lab2d{c} = nfname;
+                
                 if was_gz == true
                     % Compress back to .gz
                     p = gzip(out.pth.lab2d{c});

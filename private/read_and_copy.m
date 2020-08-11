@@ -1,4 +1,4 @@
-function [Nii,was_gz] = read_and_copy(Nii,DirOut)
+function [Nii,was_gz,nams] = read_and_copy(Nii,DirOut)
 fprintf('Making copies...')
 
 if ischar(Nii)
@@ -27,11 +27,13 @@ if ~isa(Nii{1}, 'nifti')
 end
 
 N = numel(Nii{1});
+nams = cell(2, N);
 for n=1:N      
     Nii_n = Nii{1}(n);        
     f     = Nii_n.dat.fname;
     
     [~,nam] = fileparts(f);
+    nams{1, n} = nam;
     
     nf = fullfile(DirOut,[nam '.nii']);
     if exist(nf, 'file') == 2
@@ -73,6 +75,7 @@ if numel(Nii) > 1
         Nii_n   = Nii{2}(n); 
         f       = Nii_n.dat.fname;
         [~,nam] = fileparts(f);
+        nams{2, n} = nam;
         
         nf = fullfile(DirOut,[nam '.nii']);
         if exist(nf, 'file') == 2
