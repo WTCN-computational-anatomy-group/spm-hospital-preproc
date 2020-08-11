@@ -18,6 +18,7 @@ V = spm_vol;
 for n=1:N
     V(n) = spm_vol(Nii{1}(n).dat.fname);
 end
+V = spm_vol(Nii{1}(2).dat.fname);
 
 % Write options
 if isempty(write_tc)
@@ -45,26 +46,26 @@ obj          = struct;
 obj.bb       = NaN(2,3);
 obj.vox      = NaN;
 obj.affreg   = 'mni';
-obj.reg      = [0 0.001 0.5 0.05 0.2]*1e-1;
+obj.reg      = [0 0.001 0.5 0.05 0.2];
 obj.fwhm     = 1;
 obj.samp     = 3;
 obj.biasfwhm = 60*ones(1,N);
-obj.mrf      = 2;    
-obj.cleanup  = 1;
+obj.mrf      = 1;    
+obj.cleanup  = 2;
 
 % Less bias field if CT
-dat  = single(Nii{1}(1).dat.fname);
-isct = min(dat(:)) < 0;
-if isct
-    obj.biasreg  = 10; 
-else
-    obj.biasreg  = 1e-3*(1/5)*ones(1,N);    
-end
+% dat  = single(Nii{1}(1).dat.fname);
+% isct = min(dat(:)) < 0;
+% if isct
+%     obj.biasreg  = 10; 
+% else
+    obj.biasreg  = 1e-3*ones(1,N);    
+% end
 clear dat
 
 % Load atlas
 tpmname   = fullfile(spm('dir'),'tpm','TPM.nii');
-obj.lkp   = [1 1 2 2 3 3 4 4 5 5 5 6 6];
+obj.lkp   = [1 2 3 3 4 4 4 5 5 5 5 6 6];
 obj.tpm   = spm_load_priors8(tpmname);
 obj.image = V;
 
