@@ -11,6 +11,10 @@ for n=1:N
     vx_in = sqrt(sum(Nii{1}(n).mat(1:3,1:3).^2));
     samp = vx_in./vx_out;
     
+    if isequal(round(vx_in, 2), round(vx_out, 2))
+        continue
+    end
+    
     if all(samp == 1)
         img = Nii{1}(n).dat();
         dm = size(img);

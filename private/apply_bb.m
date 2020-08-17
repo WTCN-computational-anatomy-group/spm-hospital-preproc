@@ -1,4 +1,4 @@
-function Nii = apply_bb(Nii)
+function Nii = apply_bb(Nii, vx)
 
 fprintf('Applying bounding-box...')
 N        = numel(Nii{1});
@@ -6,7 +6,7 @@ prefix   = 'bb';
 for n=1:N
     f = Nii{1}(n).dat.fname;
     
-    nf = do_apply_bb(f,prefix);
+    nf = do_apply_bb(f,prefix,vx);
     
     delete(f);
     Nii{1}(n) = nifti(nf);
@@ -15,11 +15,15 @@ fprintf('done!\n')
 %==========================================================================
 
 %==========================================================================
-function nf = do_apply_bb(f,prefix)
+function nf = do_apply_bb(f,prefix,vx)
 Nii0 = nifti(f);
 mat0 = Nii0.mat;
 dim0 = Nii0.dat.dim;
-vx0  = sqrt(sum(mat0(1:3,1:3).^2));
+if isempty(vx)
+    vx0  = sqrt(sum(mat0(1:3,1:3).^2));
+else
+    vx0 = vx(1)*ones(1,3);
+end
 
 V_tpm = spm_vol(fullfile(spm('dir'),'tpm','TPM.nii,'));
 M_tpm = V_tpm(1).mat;

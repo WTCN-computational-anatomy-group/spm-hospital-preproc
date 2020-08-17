@@ -110,20 +110,25 @@ if opt.do.superres
     % Coreg (one more time after super-resolving)
     Nii = coreg(Nii,opt.coreg);
 else
-    if opt.do.vx && ~opt.do.res_orig
-        % Set same voxel size
-        Nii = resample_images(Nii,opt.vx);
-    end
-
     if opt.do.reslice
         % Make images same dimensions
         [Nii,M] = reslice_images(Nii,M,opt.reslice);
+    end
+    
+    if opt.do.vx && ~opt.do.res_orig && ~opt.do.bb_spm
+        % Set same voxel size        
+        Nii = resample_images(Nii,opt.vx);
     end
 end
 
 if opt.do.bb_spm
     % Crop to SPM12 BB
-    Nii = apply_bb(Nii);
+    if opt.do.vx
+        vx = opt.vx.size;
+    else
+        vx = [];
+    end
+    Nii = apply_bb(Nii, vx);
 end
 
 pth_seg = {};

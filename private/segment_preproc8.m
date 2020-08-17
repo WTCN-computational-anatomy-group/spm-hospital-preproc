@@ -18,7 +18,6 @@ V = spm_vol;
 for n=1:N
     V(n) = spm_vol(Nii{1}(n).dat.fname);
 end
-V = spm_vol(Nii{1}(2).dat.fname);
 
 % Write options
 if isempty(write_tc)
@@ -51,16 +50,8 @@ obj.fwhm     = 1;
 obj.samp     = 3;
 obj.biasfwhm = 60*ones(1,N);
 obj.mrf      = 1;    
-obj.cleanup  = 2;
-
-% Less bias field if CT
-% dat  = single(Nii{1}(1).dat.fname);
-% isct = min(dat(:)) < 0;
-% if isct
-%     obj.biasreg  = 10; 
-% else
-    obj.biasreg  = 1e-3*ones(1,N);    
-% end
+obj.cleanup  = 1;
+obj.biasreg  = 1e-3*ones(1,N);    
 clear dat
 
 % Load atlas
