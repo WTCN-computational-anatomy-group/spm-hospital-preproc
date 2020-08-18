@@ -153,7 +153,7 @@ if ~isempty(opt.pth_template) && isfile(opt.pth_template)
     [Nii,M] = reslice2template(Nii,M,opt.pth_template);
 end
 
-if numel(Nii) > 1 && (opt.do.nm_reorient || opt.do.crop || opt.do.superres || opt.do.vx || (opt.do.vx && opt.do.res_orig) || opt.do.reslice || (~isempty(opt.pth_template) && isfile(opt.pth_template)))
+if numel(Nii) > 1 && (opt.do.bb_spm || opt.do.nm_reorient || opt.do.crop || opt.do.superres || opt.do.vx || (opt.do.vx && opt.do.res_orig) || opt.do.reslice || (~isempty(opt.pth_template) && isfile(opt.pth_template)))
     % Reslice labels
     Nii = reslice_labels(Nii,opt.reslice);
 end
@@ -200,7 +200,9 @@ for i=1:2
             
             [pth,~,ext] = fileparts(out.pth.im{c});
             nfname = fullfile(pth, [nams{1, c} ext]);
-            movefile(out.pth.im{c}, nfname);
+            if ~strcmp(out.pth.im{c}, nfname)
+                movefile(out.pth.im{c}, nfname);
+            end
             out.pth.im{c} = nfname;
             
             if opt.do.go2native
@@ -220,7 +222,9 @@ for i=1:2
             
             [pth,~,ext] = fileparts(out.pth.lab{c});
             nfname = fullfile(pth, [nams{2, c} ext]);
-            movefile(out.pth.lab{c}, nfname);
+            if ~strcmp(out.pth.lab{c}, nfname)
+                movefile(out.pth.lab{c}, nfname);
+            end
             out.pth.lab{c} = nfname;
             
             if opt.do.go2native
@@ -272,7 +276,9 @@ for i=1:2
                 
                 [pth,~,ext] = fileparts(out.pth.im2d{c});
                 nfname = fullfile(pth, [nams{1, c} ext]);
-                movefile(out.pth.im2d{c}, nfname);
+                if ~strcmp(out.pth.im2d{c}, nfname)
+                    movefile(out.pth.im2d{c}, nfname);
+                end
                 out.pth.im2d{c} = nfname;
                 
                 if was_gz == true
@@ -286,7 +292,9 @@ for i=1:2
                 
                 [pth,~,ext] = fileparts(out.pth.lab2d{c});
                 nfname = fullfile(pth, [nams{2, c} ext]);
-                movefile(out.pth.lab2d{c}, nfname);
+                if ~strcmp(out.pth.lab2d{c}, nfname)
+                    movefile(out.pth.lab2d{c}, nfname);
+                end
                 out.pth.lab2d{c} = nfname;
                 
                 if was_gz == true
