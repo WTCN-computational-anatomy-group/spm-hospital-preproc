@@ -145,7 +145,9 @@ end
 if opt.do.skullstrip
     % Skull-strip (depends on segment_preproc8())
     Nii = skull_strip(Nii,pth_seg);
-    for k=1:numel(pth_seg{1}), delete(pth_seg{1}{k}); end
+    if ~opt.do.segment0
+        for k=1:numel(pth_seg{1}), delete(pth_seg{1}{k}); end
+    end
 end
 
 if ~isempty(opt.pth_template) && isfile(opt.pth_template)

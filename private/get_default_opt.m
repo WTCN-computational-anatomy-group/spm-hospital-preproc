@@ -81,6 +81,7 @@ if opt.do.segment && (opt.do.skullstrip || opt.do.bfcorr)
     warning('OBS: Not writing segmentations, because opt.do.skullstrip || opt.do.bfcorr'); 
 end
 
+opt.do.segment0 = opt.do.segment;
 if opt.do.skullstrip || opt.do.bfcorr    
     opt.do.segment = true;
     if opt.do.bfcorr
