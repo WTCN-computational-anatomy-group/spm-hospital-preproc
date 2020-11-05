@@ -38,7 +38,7 @@ if opt.do.denoise || opt.do.superres
     end
 end
 
-if ~(exist(opt.dir_out,'dir') == 7)  
+if ~isempty(opt.dir_out) && ~(exist(opt.dir_out,'dir') == 7)  
     % Create output directory
     mkdir(opt.dir_out);  
 end
@@ -48,7 +48,7 @@ s           = what(opt.dir_out);
 opt.dir_out = s.path;
 
 % Copy (so to not overwrite originals)
-[Nii,was_gz,nams] = read_and_copy(paths,opt.dir_out);
+[Nii,was_gz,nams] = read_and_copy(paths,opt.dir_out,opt.prefix);
 
 C = numel(Nii{1});
 

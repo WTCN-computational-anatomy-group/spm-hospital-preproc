@@ -23,6 +23,7 @@ if ~isfield(opt.do,'go2native'),   opt.do.go2native   = true;   end
 % Output directory
 if ~isfield(opt,'dir_out'),   opt.dir_out   = 'output';    end
 if ~isfield(opt,'dir_out2d'), opt.dir_out2d = opt.dir_out; end
+if ~isfield(opt,'prefix'),    opt.prefix    = '';          end
 % int_norm options
 if ~isfield(opt,'int_norm'),     opt.int_norm    = struct; end
 if ~isfield(opt.int_norm,'rng'), opt.int_norm.rng = [0 1]; end

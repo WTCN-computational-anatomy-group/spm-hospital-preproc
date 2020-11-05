@@ -1,4 +1,4 @@
-function [Nii,was_gz,nams] = read_and_copy(Nii,DirOut)
+function [Nii,was_gz,nams] = read_and_copy(Nii,DirOut,prefix)
 fprintf('Making copies...')
 
 if ischar(Nii)
@@ -32,7 +32,8 @@ for n=1:N
     Nii_n = Nii{1}(n);        
     f     = Nii_n.dat.fname;
     
-    [~,nam] = fileparts(f);
+    [~,nam]    = fileparts(f);
+    nam        = [prefix nam];  % Integrate prefix option
     nams{1, n} = nam;
     
     nf = fullfile(DirOut,[nam '.nii']);
@@ -74,7 +75,9 @@ if numel(Nii) > 1
         
         Nii_n   = Nii{2}(n); 
         f       = Nii_n.dat.fname;
-        [~,nam] = fileparts(f);
+        
+        [~,nam]    = fileparts(f);
+        nam        = [prefix nam];  % Integrate prefix option
         nams{2, n} = nam;
         
         nf = fullfile(DirOut,[nam '.nii']);
