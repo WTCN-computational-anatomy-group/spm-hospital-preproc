@@ -6,8 +6,10 @@ function out = RunPreproc(paths,opt)
 %            paths = im.ext, 
 %            paths = {im1.ext, ..., imN.ext}
 %            paths = {{im1.ext, ..., imN.ext}, 
-%                     {lab1.ext, ..., labN.ext}}
-%         where valid extensions are .nii and .nii.gz.          
+%                     {'', ..., labn.ext, ..., ''}}  
+%            
+%         where valid extensions are .nii and .nii.gz, and labn.ext should 
+%         be in the same index position as the image it was labelled on.
 % opt   - Preprocessing options
 %
 % OUTPUT
@@ -85,7 +87,7 @@ end
 
 if opt.do.crop
     % Remove uneccesary data
-    Nii = crop(Nii,opt.crop);
+    Nii = crop(Nii,opt.do.real_mni,opt.crop);
 end
 
 if opt.do.coreg
@@ -189,7 +191,7 @@ out.pth.norm  = {};
 out.mat       = cell(1,C);
 for i=1:2
     for c=1:C
-        if (i == 2 && numel(Nii) == 1) || isempty(Nii{i}(c).dat), continue; end
+        if (i == 2 && numel(Nii) == 1) || (c > numel(Nii{i}) || isempty(Nii{i}(c).dat)), continue; end
         
         f = Nii{i}(c).dat.fname;
         

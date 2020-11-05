@@ -38,7 +38,7 @@ for ax=1:3 % loop over anatomical axis
     if numel(Nii) > 1
         % Labels too
         for n=1:N
-            if isempty(Nii{2}(n).dat), continue; end
+            if n > numel(Nii{2}) || isempty(Nii{2}(n).dat), continue; end
 
             f           = Nii{2}(n).dat.fname;  
             [~,nam,ext] = fileparts(f);

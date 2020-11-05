@@ -21,7 +21,7 @@ end
 if numel(Nii) > 1
     % Keep labels in alignment
     for n=1:N
-        if isempty(Nii{2}(n).dat), continue; end
+        if n > numel(Nii{2}) || isempty(Nii{2}(n).dat), continue; end
         
         if only_neg && min(Nii{1}(n).dat(:)) >= 0
             % No negative values, do not reset

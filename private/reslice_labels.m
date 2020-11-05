@@ -9,7 +9,7 @@ if numel(Nii) > 1
     % Reslice labels too
     V = spm_vol(Nii{1}(ref_ix).dat.fname);
     for n=1:N
-        if isempty(Nii{2}(n).dat), continue; end
+        if n > numel(Nii{2}) || isempty(Nii{2}(n).dat), continue; end
         
         Nii{2}(n) = do_reslice(V,Nii{2}(n));
     end    

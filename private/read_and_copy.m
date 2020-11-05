@@ -56,20 +56,26 @@ if numel(Nii) > 1
             
     if ~isa(Nii{2}, 'nifti')
         % Input are paths
-        N = numel(Nii{2});    
-        for n=1:N
+        N1   = numel(Nii{1});
+        Nii2 = nifti;
+        for n=1:N1
+            if n > numel(Nii{2}) || isempty(Nii{2}{n}), continue; end
+            
             f = Nii{2}{n};
             [dir,~,ext] = fileparts(f);
             if strcmp(ext, '.gz')
                 % Input is zipped -> extract
                 f = gunzip(f);
                 [~,nam,ext] = fileparts(f{1});
-                Nii{2}{n} = fullfile(dir, [nam ext]);
+                f           = fullfile(dir, [nam ext]);
             end
+            Nii2(n) = nifti(f);
         end
-        Nii{2} = nifti(Nii{2});
+        Nii{2} = Nii2;
+        clear Nii2
     end
 
+    N = numel(Nii{2});
     for n=1:N
         if isempty(Nii{2}(n).dat), continue; end
         

@@ -37,7 +37,7 @@ end
 if numel(Nii) > 1
     % Keep labels in alignment
     for n=source_ix
-        if isempty(Nii{2}(n).dat), continue; end
+        if n > numel(Nii{2}) || isempty(Nii{2}(n).dat), continue; end
         
         f         = Nii{2}(n).dat.fname;
         mat0      = Nii{2}(n).mat;
