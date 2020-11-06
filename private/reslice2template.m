@@ -45,8 +45,8 @@ for n=1:N
     
     [pth,nam,ext] = fileparts(f);
     npth          = fullfile(pth,['rt' nam ext]);
-    create_nii(npth,im,Mr,'float32','resliced',...
-               Nii{1}(n).dat.offset,Nii{1}(n).dat.scl_slope,Nii{1}(n).dat.scl_inter);    
+    
+    write_nii(npth, im, Mr, Nii{1}(n).descrip, 'int16');
     
     Nii{1}(n) = nifti(npth);
     delete(f);

@@ -121,9 +121,8 @@ if make_4d && (K> 0 && K < 6)
     f             = Nii_seg(1).dat.fname;  
     [pth,nam,ext] = fileparts(f);
     
-    nf = fullfile(pth,['c' num2str(K + 1) nam(3:end) ext]);  
-    create_nii(nf,bg,Nii_seg(1).mat,Nii_seg(1).dat.dtype,['Tissue class ' num2str(K + 1)], ...
-               Nii_seg(1).dat.offset,Nii_seg(1).dat.scl_slope,Nii_seg(1).dat.scl_inter);
+    nf = fullfile(pth,['c' num2str(K + 1) nam(3:end) ext]);      
+    write_nii(nf,bg,Nii_seg(1).mat,['Tissue class ' num2str(K + 1)],'uint8');
            
     pths{1}{end + 1} = nf;
 end
@@ -145,9 +144,8 @@ if make_4d
         f             = Nii_seg(1).dat.fname;  
         [pth,nam,ext] = fileparts(f);
 
-        nf = fullfile(pth,['c0' nam(3:end) ext]);  
-        create_nii(nf,im,Nii_seg(1).mat,Nii_seg(1).dat.dtype,'Tissue classes (4D)', ...
-                   Nii_seg(1).dat.offset,Nii_seg(1).dat.scl_slope,Nii_seg(1).dat.scl_inter);           
+        nf = fullfile(pth,['c0' nam(3:end) ext]);         
+        write_nii(nf,im,Nii_seg(1).mat,'Tissue classes (4D)','uint8');         
     end
 end
 

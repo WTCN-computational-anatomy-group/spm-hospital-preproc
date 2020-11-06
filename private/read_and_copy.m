@@ -41,8 +41,7 @@ for n=1:N
         delete(nf); 
     end   
             
-    create_nii(nf,Nii_n.dat(),Nii_n.mat,Nii_n.dat.dtype,'copy',...
-               Nii_n.dat.offset,Nii_n.dat.scl_slope,Nii_n.dat.scl_inter);
+    write_nii(nf, Nii_n.dat(), Nii_n.mat, 'Patient-Preprocessing Copy', 'int16');
                    
     Nii{1}(n) = nifti(nf);
    
@@ -94,7 +93,7 @@ if numel(Nii) > 1
         im = Nii_n.dat();        
         if max(im(:)) > 255, error('Copy labels: values over 255!'); end
         
-        create_nii(nf,im,Nii_n.mat,spm_type('uint8'),'labels');        
+        write_nii(nf, im, Nii_n.mat, 'Patient-Preprocessing Copy', 'uint8');            
         
         Nii{2}(n) = nifti(nf);
         
