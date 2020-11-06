@@ -157,7 +157,7 @@ if ~isempty(opt.pth_template) && isfile(opt.pth_template)
     [Nii,M] = reslice2template(Nii,M,opt.pth_template);
 end
 
-if numel(Nii) > 1 && (opt.do.bb_spm || opt.do.nm_reorient || opt.do.crop || opt.do.superres || opt.do.vx || (opt.do.vx && opt.do.res_orig) || opt.do.reslice || (~isempty(opt.pth_template) && isfile(opt.pth_template)))
+if numel(Nii) > 1
     % Reslice labels
     Nii = reslice_labels(Nii,opt.reslice);
 end

@@ -43,21 +43,16 @@ for l=ul
     msk1      = (tmp>p1);
     p1(msk1)  = tmp(msk1);
     l12(msk1) = l;
-end             
-l12 = uint8(l12);
-
-[pth,nam,ext] = fileparts(fnl);
-nfnl          = fullfile(pth,['r' nam ext]);
-
-oNii         = nifti;
-oNii.dat     = file_array(nfnl,dmn,NiiLabels(1).dat.dtype,NiiLabels(1).dat.offset,NiiLabels(1).dat.scl_slope,NiiLabels(1).dat.scl_inter);
-oNii.mat     = Mn;
-oNii.mat0    = Mn;
-oNii.descrip = 'Labels';
-create(oNii);
-oNii.dat(:)  = l12(:);
-
-delete(fnl);
+end     
+% Overwrite image data
+VO             = spm_vol(fnl);
+VO.dim(1:3)    = dmn;        
+VO.mat         = Mn;
+VO             = spm_create_vol(VO);        
+Nii            = nifti(VO.fname);    
+Nii.dat(:,:,:) = round(l12); 
+% Return label nifti
+oNii = nifti(fnl);
 %==========================================================================
 
 %==========================================================================
