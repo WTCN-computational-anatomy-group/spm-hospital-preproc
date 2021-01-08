@@ -19,7 +19,7 @@ if ~isfield(opt.do,'skullstrip'),  opt.do.skullstrip  = false;  end
 if ~isfield(opt.do,'bfcorr'),      opt.do.bfcorr      = false;  end
 if ~isfield(opt.do,'int_norm'),    opt.do.int_norm    = false;  end
 if ~isfield(opt.do,'bb_spm'),      opt.do.bb_spm      = false;  end
-if ~isfield(opt.do,'go2native'),   opt.do.go2native   = true;   end
+if ~isfield(opt.do,'go2native'),   opt.do.go2native   = false;  end
 % Output directory
 if ~isfield(opt,'dir_out'),   opt.dir_out   = 'output';    end
 if ~isfield(opt,'dir_out2d'), opt.dir_out2d = opt.dir_out; end
