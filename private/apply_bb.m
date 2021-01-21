@@ -33,7 +33,7 @@ vx_tpm  = sqrt(sum(M_tpm(1:3,1:3).^2));
 % Output image properties
 D   = diag([vx_tpm./vx0 1]);
 mat = M_tpm/D;
-dm  = floor(D(1:3,1:3)*d_tpm')';
+dm  = round(D(1:3,1:3)*d_tpm')';
 
 % Make interpolation grid
 [x0,y0,z0] = ndgrid(1:dm(1),1:dm(2),1:dm(3));
