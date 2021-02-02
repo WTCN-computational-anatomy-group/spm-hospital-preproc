@@ -73,7 +73,7 @@ mx   = max(img(:));
 % Output image properties
 D   = diag([samp 1]);
 mat = mat0/D;
-dm  = round(D(1:3,1:3)*dm0')';
+dm  = floor(D(1:3,1:3)*dm0')';
 
 % Make interpolation grid
 [x0,y0,z0] = ndgrid(1:dm(1),1:dm(2),1:dm(3));

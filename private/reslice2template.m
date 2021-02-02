@@ -15,7 +15,7 @@ vx   = [1 1 1];
 samp = vxr./vx;
 D    = diag([samp 1]);
 Mr   = Mr/D;
-dmr  = round(D(1:3,1:3)*dmr')';
+dmr  = floor(D(1:3,1:3)*dmr')';
 
 for n=1:N
     f  = Nii{1}(n).dat.fname;
