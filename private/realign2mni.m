@@ -31,11 +31,11 @@ fprintf('done!\n')
 %==========================================================================
 
 %==========================================================================
-function M = rigid_align(P,do_rigid)
+function R = rigid_align(P,do_rigid)
 % Reposition an image by affine aligning to MNI space and Procrustes adjustment
 % FORMAT rigid_align(P)
 % P - name of NIfTI image
-% M - Affine matrix
+% R - Affine matrix
 %
 % OBS: Image will have the matrix in its header adjusted.
 %__________________________________________________________________________
