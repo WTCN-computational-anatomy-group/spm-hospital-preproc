@@ -7,7 +7,7 @@ if numel(Nii) > 1
         
     
     for n=1:N
-        if isempty(Nii{2}(n).dat), continue; end
+        if n > numel(Nii{2}) || isempty(Nii{2}(n).dat), continue; end
         
         nii     = Nii{2}(n).dat();
         nlabels = do_collapse(nii,part);
