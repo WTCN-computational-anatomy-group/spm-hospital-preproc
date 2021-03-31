@@ -87,6 +87,7 @@ job.eoptions.affreg   = 'mni';
 job.eoptions.reg      = [0 1e-3 0.5 0.05 0.2];
 job.eoptions.fwhm     = 0;
 job.eoptions.samp     = 3;
+job.eoptions.write    = opt.write_df;
 
 job.woptions.bb     = spm_get_defaults('normalise.write.bb');
 job.woptions.vox    = spm_get_defaults('normalise.write.vox');
@@ -182,7 +183,7 @@ preproc8.warp.reg    = job.eoptions.reg;
 preproc8.warp.affreg = job.eoptions.affreg;
 preproc8.warp.fwhm   = job.eoptions.fwhm;
 preproc8.warp.samp   = job.eoptions.samp;
-preproc8.warp.write  = [0 1];
+preproc8.warp.write  = job.eoptions.write;
 preproc8.savemat     = 0;
 
 for i=1:numel(job.subj),
