@@ -67,9 +67,10 @@ if ~isfield(opt.segment,'dir_out'),  opt.segment.dir_out  = [];     end
 if ~isfield(opt.segment,'make_4d'),  opt.segment.make_4d  = false;  end
 if ~isfield(opt.segment,'mask'),     opt.segment.mask     = false;  end
 % Normalise options
-if ~isfield(opt,'normalise'),      opt.normalise      = struct; end
-if ~isfield(opt.normalise,'mask'), opt.normalise.mask = false;  end
-if ~isfield(opt.normalise,'vol'),  opt.normalise.vol  = 1;      end
+if ~isfield(opt,'normalise'),          opt.normalise          = struct; end
+if ~isfield(opt.normalise,'mask'),     opt.normalise.mask     = false;  end
+if ~isfield(opt.normalise,'vol'),      opt.normalise.vol      = 1;      end
+if ~isfield(opt.normalise,'write_df'), opt.normalise.write_df = [0 1]; end
 % Path to template (good for using, e.g., VoxelMorph)
 if ~isfield(opt,'pth_template'),   opt.pth_template = []; end
 
