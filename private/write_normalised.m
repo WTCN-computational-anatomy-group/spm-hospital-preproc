@@ -21,7 +21,7 @@ end
 
 job               = struct;
 job.subj.vol      = [];
-job.subj.def      = pth_seg{5}{1};
+job.subj.def      = {def};
 job.woptions.bb     = spm_get_defaults('normalise.write.bb');
 job.woptions.vox    = opt.vox;
 job.woptions.interp = spm_get_defaults('normalise.write.interp');
