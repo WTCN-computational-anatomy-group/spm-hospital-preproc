@@ -165,7 +165,7 @@ end
 pth_norm = {};
 if opt.do.normalise
     % Create normalised versions of Nii
-    pth_norm = make_normalised(Nii,opt.normalise);
+    pth_norm = write_normalised(Nii,opt.normalise,pth_seg);
 end
 
 if opt.do.int_norm
