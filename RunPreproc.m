@@ -133,7 +133,7 @@ if opt.do.bb_spm
     Nii = apply_bb(Nii, vx);
 end
 
-if numel(Nii) > 1
+if numel(Nii) > 1 && isempty(opt.pth_template)
     % Reslice labels
     Nii = reslice_labels(Nii,opt.reslice);
 end
@@ -160,6 +160,11 @@ end
 if ~isempty(opt.pth_template) && isfile(opt.pth_template)
     % Reslice and affinely register images to a template
     [Nii,M] = reslice2template(Nii,M,opt.pth_template);
+     
+    if numel(Nii) > 1
+        % Reslice labels
+        Nii = reslice_labels(Nii,opt.reslice);
+    end
 end
 
 pth_norm = {};
