@@ -133,6 +133,11 @@ if opt.do.bb_spm
     Nii = apply_bb(Nii, vx);
 end
 
+if numel(Nii) > 1 && isempty(opt.pth_template)
+    % Reslice labels
+    Nii = reslice_labels(Nii,opt.reslice);
+end
+
 pth_seg = {};
 if opt.do.segment
     % Run SPM12 segmentation
@@ -155,17 +160,17 @@ end
 if ~isempty(opt.pth_template) && isfile(opt.pth_template)
     % Reslice and affinely register images to a template
     [Nii,M] = reslice2template(Nii,M,opt.pth_template);
-end
-
-if numel(Nii) > 1
-    % Reslice labels
-    Nii = reslice_labels(Nii,opt.reslice);
+     
+    if numel(Nii) > 1
+        % Reslice labels
+        Nii = reslice_labels(Nii,opt.reslice);
+    end
 end
 
 pth_norm = {};
 if opt.do.normalise
     % Create normalised versions of Nii
-    pth_norm = make_normalised(Nii,opt.normalise);
+    pth_norm = write_normalised(Nii,opt.normalise,pth_seg);
 end
 
 if opt.do.int_norm

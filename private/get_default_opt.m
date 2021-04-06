@@ -65,12 +65,11 @@ if ~isfield(opt.segment,'write_bf'), opt.segment.write_bf = [];     end
 if ~isfield(opt.segment,'write_df'), opt.segment.write_df = [];     end
 if ~isfield(opt.segment,'dir_out'),  opt.segment.dir_out  = [];     end
 if ~isfield(opt.segment,'make_4d'),  opt.segment.make_4d  = false;  end
-if ~isfield(opt.segment,'mask'),     opt.segment.mask     = false;  end
+if ~isfield(opt.segment,'domask'),   opt.segment.domask   = false;  end
+if ~isfield(opt.segment,'maskvol'),  opt.segment.maskvol  = 1;  end
 % Normalise options
-if ~isfield(opt,'normalise'),          opt.normalise          = struct; end
-if ~isfield(opt.normalise,'mask'),     opt.normalise.mask     = false;  end
-if ~isfield(opt.normalise,'vol'),      opt.normalise.vol      = 1;      end
-if ~isfield(opt.normalise,'write_df'), opt.normalise.write_df = [0 1]; end
+if ~isfield(opt,'normalise'),     opt.normalise     = struct; end
+if ~isfield(opt.normalise,'vox'), opt.normalise.vox = [];  end
 % Path to template (good for using, e.g., VoxelMorph)
 if ~isfield(opt,'pth_template'),   opt.pth_template = []; end
 
@@ -79,12 +78,20 @@ if opt.do.bb_spm
     opt.do.real_mni = true;
 end
 
+if opt.do.segment
+    % From spm_preproc8:
+    % "Data can be multispectral, with N channels, but files must be in
+    % voxel-for-voxel alignment."
+    opt.do.reslice = true;
+    % If there is only one image, reslicing will be skipped.
+end
+
 if opt.do.segment && (opt.do.skullstrip || opt.do.bfcorr)
     warning('OBS: Not writing segmentations, because opt.do.skullstrip || opt.do.bfcorr'); 
 end
 
 opt.do.segment0 = opt.do.segment;
-if opt.do.skullstrip || opt.do.bfcorr    
+if opt.do.skullstrip || opt.do.bfcorr || opt.do.normalise
     opt.do.segment = true;
     if opt.do.bfcorr
         opt.segment.write_bf = [false true];
@@ -92,6 +99,16 @@ if opt.do.skullstrip || opt.do.bfcorr
     if opt.do.skullstrip
         opt.segment.write_tc        = false(6,4);
         opt.segment.write_tc(1:3,1) = true;
+    end
+    if opt.do.normalise
+        % Save the forward deformation field
+        if isempty(opt.segment.write_df)
+            opt.segment.write_df = [false true];
+        elseif numel(opt.segment.write_df) == 1
+            opt.segment.write_df = true;
+        else
+            opt.segment.write_df(2) = true;
+        end
     end
 end
 %==========================================================================

@@ -7,6 +7,8 @@ write_bf = opt.write_bf;
 write_df = opt.write_df;
 dir_out  = opt.dir_out;
 make_4d  = opt.make_4d;
+domask   = opt.domask;
+maskvol  = opt.maskvol;
 
 if ~isempty(dir_out) && ~(exist(dir_out, 'dir') == 7)
     mkdir(dir_out); 
@@ -54,13 +56,24 @@ obj.cleanup  = 1;
 obj.biasreg  = 1e-3*ones(1,N);    
 clear dat
 
+% Potentially mask using labels
+if domask
+    if ~isempty(Nii{2}(maskvol).dat)
+        obj.msk = Nii{2}(maskvol).dat.fname;
+    else
+        fprintf('Skipping cost function masking because mask image is empty: %s\n', ...
+            Nii{2}(maskvol).dat.fname)
+    end
+end
+
 % Load atlas
 tpmname   = fullfile(spm('dir'),'tpm','TPM.nii');
 obj.lkp   = [1 2 3 3 4 4 4 5 5 5 5 6 6];
 obj.tpm   = spm_load_priors8(tpmname);
 obj.image = V;
 
-% Register atlas
+% Initial affine registration.
+% Run using origin at centre of the field of view
 M                       = obj.image(1).mat;
 c                       = (obj.image(1).dim+1)/2;
 obj.image(1).mat(1:3,4) = -M(1:3,1:3)*c(:);
@@ -74,15 +87,14 @@ obj.image(1).mat = M;
 % Pick the result with the best fit
 if ll1>ll2, obj.Affine  = Affine1; else obj.Affine  = Affine2; end
 
-% Initial affine registration.
 obj.Affine = spm_maff8(obj.image(1),4,(obj.fwhm+1)*16,obj.tpm, obj.Affine, obj.affreg); % Closer to rigid
 obj.Affine = spm_maff8(obj.image(1),3, obj.fwhm,      obj.tpm, obj.Affine, obj.affreg);    
 
 % Run the actual segmentation
 res = spm_preproc8(obj);
 
-% Final iteration, so write out the required data.
-spm_preproc_write8(res,write_tc,repmat(write_bf,N,1),write_df,obj.mrf,obj.cleanup,obj.bb,obj.vox,dir_out);
+% Final iteration, so write out the required data (removed repmat from write_bf as this is done already).
+spm_preproc_write8(res,write_tc,write_bf,write_df,obj.mrf,obj.cleanup,obj.bb,obj.vox,dir_out);
 
 % Get paths to segmentations
 if isempty(dir_out)
