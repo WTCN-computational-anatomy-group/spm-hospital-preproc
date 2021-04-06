@@ -1,7 +1,7 @@
 function npth = nm_reorient(pth,vx,prefix,deg)
 if nargin < 2, vx     = [];   end
-if nargin < 3, prefix = 'ro'; end
-if nargin < 4, deg    = 1;    end
+if nargin < 3, prefix = spm_get_defaults('realign.write.prefix'); end
+if nargin < 4, deg    = spm_get_defaults('realign.write.interp'); end
 
 if ~isempty(vx) && length(vx) < 3
     vx=[vx vx vx];
