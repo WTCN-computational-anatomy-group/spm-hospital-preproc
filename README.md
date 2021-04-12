@@ -1,4 +1,4 @@
-# Patient-Preprocessing
+# Preprocessing of hospital-grade neuroimaing data
 
 This is MATLAB code for various neuroimaging preprocessing operations (registration, reslicing, denoising, segmentation, etc.), which was originally intended for processing routine clinical data (hence the name) [1]. It takes as input nifti files (as .nii or .nii.gz) and produces copies of this data to which the requested preprocessing steps are applied. It additionally handles image data with paired label masks (e.g., a T1w MRI and a tumour mask (or multiple classes)), and makes sure that the resulting preprocessed data is consistent. See below for some example use cases, which could be run stand-alone or be inspiration for more complicated preprocessing tasks.
 
