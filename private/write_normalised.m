@@ -4,12 +4,6 @@ fprintf('Writing normalised...')
 
 N = numel(Nii{1});
 
-if isempty(opt.vox)
-    opt.vox = spm_get_defaults('normalise.write.vox');
-elseif numel(opt.vox) == 1
-    opt.vox = opt.vox*ones(1,3);
-end
-
 def = pth_seg{5}{1};
 if ~exist(def, 'file')
     error('Cannot find forward deformation field: %s\n', def)
@@ -22,10 +16,22 @@ end
 job               = struct;
 job.subj.vol      = [];
 job.subj.def      = {def};
-job.woptions.bb     = spm_get_defaults('normalise.write.bb');
-job.woptions.vox    = opt.vox;
 job.woptions.interp = spm_get_defaults('normalise.write.interp');
 job.woptions.prefix = spm_get_defaults('normalise.write.prefix');
+if isempty(opt.vox)
+    job.woptions.vox = spm_get_defaults('normalise.write.vox');
+elseif numel(opt.vox) == 1
+    job.woptions.vox = opt.vox*ones(1,3);
+else
+    job.woptions.vox = opt.vox;
+end
+if isempty(opt.bb)
+    job.woptions.bb = spm_get_defaults('normalise.write.bb');
+elseif numel(opt.bb) == 1
+    job.woptions.bb = opt.bb*ones(1,3);
+else
+    job.woptions.bb = opt.bb;
+end
 
 %----------------------
 % Make input for normalisataion routine
@@ -37,11 +43,14 @@ images = cell(N,1);
 job.subj.resample = images;
 write_norm(job);
 
-% Labels using nearest neighbour
 labels = {};
-if numel(Nii) > 1 || ~isempty(Nii{2})
-    labels = cell(numel(Nii{2}),1);
-    [labels{:}] = Nii{2}(:).dat.fname;
+if numel(Nii) > 1
+    % Normalise labels using nearest neighbour
+    for n=1:N
+        if n <= numel(Nii{2}) && ~isempty(Nii{2}(n).dat)
+            labels{end+1} = Nii{2}(n).dat.fname;
+        end
+    end
     job.subj.resample = labels;
     job.woptions.interp = 0;
     write_norm(job);
