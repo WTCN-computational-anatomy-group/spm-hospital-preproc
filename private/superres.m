@@ -19,9 +19,10 @@ if ~isempty(ix)
         P{c} = cell(1,N);
         cnt  = 1;
         for n=find(ix == c)
-            P{c}{cnt} = Nii{1}(n);
+            P{c}{cnt} = Nii{1}(n).dat.fname;
             cnt       = cnt + 1;
         end
+        P{c} = char(P{c}); % Needs to be character array not cell array
     end
     
     oNii = do_superres(P,Verbose,DoCoreg);
