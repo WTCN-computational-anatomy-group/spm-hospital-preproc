@@ -87,9 +87,9 @@ opt.do.superres = true;     % Enable super-resolution
 RunPreproc(paths, opt);
 ```
 
-### 5. Changing the voxel size of a bunch of images
+### 5. Changing the voxel size of a bunch of images, using `parfor`
 
-This MATLAB snippet simply changes the voxel size of multiple image volumes (e.g., MRIs or tissue segmentations), assumed to be located in the same folder. The interpolation order can be changed, here nearest neigbour is used.
+This MATLAB snippet simply changes the voxel size of multiple image volumes (e.g., MRIs or tissue segmentations), assumed to be located in the same folder. The interpolation order can be changed, here nearest neigbour is used. To speed up the processing, `parfor` from the *Parallel Computing Toolbox* is used. If this toolbox is not available to you, simply replace `parfor` with a regular `for` loop.
 ```
 % Path to images
 dir_data = '/path/to/folder/with/images'; % Directory with images
@@ -108,7 +108,9 @@ opt.vx.size = 3;        % What output voxel size?
 opt.vx.deg  = 0;        % What interpolation order (0: nearest neighbour)?
 
 % Run preprocessing
-RunPreproc(paths, opt);
+parfor i=1:numel(paths)
+    RunPreproc(paths{i}, opt);
+end
 ```
 
 ## References
