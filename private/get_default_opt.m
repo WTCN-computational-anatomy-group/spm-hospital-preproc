@@ -71,6 +71,7 @@ if ~isfield(opt.segment,'maskvol'),  opt.segment.maskvol  = 1;  end
 if ~isfield(opt,'normalise'),     opt.normalise     = struct; end
 if ~isfield(opt.normalise,'vox'), opt.normalise.vox = [];  end
 if ~isfield(opt.normalise,'bb'),  opt.normalise.bb  = [];  end
+if ~isfield(opt.normalise,'deg'),  opt.normalise.deg  = [];  end
 % Path to template (good for using, e.g., VoxelMorph)
 if ~isfield(opt,'pth_template'),   opt.pth_template = []; end
 

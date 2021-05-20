@@ -16,7 +16,11 @@ end
 job               = struct;
 job.subj.vol      = [];
 job.subj.def      = {def};
-job.woptions.interp = spm_get_defaults('normalise.write.interp');
+if isempty(opt.deg)
+    job.woptions.interp = spm_get_defaults('normalise.write.interp');
+else
+    job.woptions.inter = opt.deg;
+end
 job.woptions.prefix = spm_get_defaults('normalise.write.prefix');
 if isempty(opt.vox)
     job.woptions.vox = spm_get_defaults('normalise.write.vox');
