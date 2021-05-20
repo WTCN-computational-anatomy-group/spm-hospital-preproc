@@ -19,7 +19,7 @@ job.subj.def      = {def};
 if isempty(opt.deg)
     job.woptions.interp = spm_get_defaults('normalise.write.interp');
 else
-    job.woptions.inter = opt.deg;
+    job.woptions.interp = opt.deg;
 end
 job.woptions.prefix = spm_get_defaults('normalise.write.prefix');
 if isempty(opt.vox)
