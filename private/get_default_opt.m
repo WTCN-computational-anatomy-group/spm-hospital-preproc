@@ -72,6 +72,9 @@ if ~isfield(opt,'normalise'),     opt.normalise     = struct; end
 if ~isfield(opt.normalise,'vox'), opt.normalise.vox = [];  end
 if ~isfield(opt.normalise,'bb'),  opt.normalise.bb  = [];  end
 if ~isfield(opt.normalise,'deg'),  opt.normalise.deg  = [];  end
+% BB options
+if ~isfield(opt,'bb'),     opt.bb     = struct; end
+if ~isfield(opt.bb,'dim'), opt.bb.dim = NaN;  end
 % Path to template (good for using, e.g., VoxelMorph)
 if ~isfield(opt,'pth_template'),   opt.pth_template = []; end
 

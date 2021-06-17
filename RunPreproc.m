@@ -130,7 +130,7 @@ if opt.do.bb_spm
     else
         vx = [];
     end
-    Nii = apply_bb(Nii, vx);
+    Nii = apply_bb(Nii, vx, opt.bb.dim);
 end
 
 if numel(Nii) > 1 && isempty(opt.pth_template)
