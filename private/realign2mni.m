@@ -2,6 +2,8 @@ function [Nii,M] = realign2mni(Nii,M,opt)
 fprintf('Realigning to MNI...')
 
 do_rigid = opt.rigid;
+ix_realign = opt.ix_realign;
+n_classes = opt.n_classes;
 
 N = numel(Nii{1});
 if nargin < 2
@@ -9,11 +11,27 @@ if nargin < 2
     M(:) = {eye(4)};
 end
 R = cell(1,N);
-for n=1:N
+if ix_realign == 0
+    for n=1:N
+        f         = Nii{1}(n).dat.fname;
+        R{n}      = rigid_align(f,do_rigid,n_classes);
+        M{n}      = M{n}*R{n};
+        Nii{1}(n) = nifti(f);
+    end
+else
+    n         = ix_realign;
     f         = Nii{1}(n).dat.fname;
-    R{n}      = rigid_align(f,do_rigid);
+    R{n}      = rigid_align(f,do_rigid,n_classes);
     M{n}      = M{n}*R{n};
     Nii{1}(n) = nifti(f);
+    for n1=1:N
+        if n1 == n, continue; end
+        f     = Nii{1}(n1).dat.fname;
+        R{n1} = R{n};
+        M{n1} = M{n1}*R{n1};
+        spm_get_space(f, R{n}\Nii{1}(n1).mat);
+        Nii{1}(n1) = nifti(f);
+    end
 end
 
 if numel(Nii) > 1
@@ -31,7 +49,7 @@ fprintf('done!\n')
 %==========================================================================
 
 %==========================================================================
-function M = rigid_align(P,do_rigid)
+function M = rigid_align(P,do_rigid,n_classes)
 % Reposition an image by affine aligning to MNI space and Procrustes adjustment
 % FORMAT rigid_align(P)
 % P - name of NIfTI image
@@ -42,10 +60,11 @@ function M = rigid_align(P,do_rigid)
 % Copyright (C) 2018 Wellcome Trust Centre for Neuroimaging
 
 if nargin < 2, do_rigid = true; end
+if nargin < 3, n_classes = 6; end
 
 % Load tissue probability data
 tpm = fullfile(spm('dir'),'tpm','TPM.nii,');
-tpm = [repmat(tpm,[6 1]) num2str((1:6)')];
+tpm = [repmat(tpm,[n_classes 1]) num2str((1:n_classes)')];
 tpm = spm_load_priors8(tpm);
 
 % Do the affine registration

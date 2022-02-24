@@ -34,8 +34,10 @@ if ~isfield(opt.labels,'part'), opt.labels.part = [];     end
 if ~isfield(opt,'reset_orig'),          opt.reset_orig          = struct; end
 if ~isfield(opt.reset_orig,'only_neg'), opt.reset_orig.only_neg = false;  end
 % realign2mni options
-if ~isfield(opt,'realign2mni'),       opt.realign2mni       = struct; end
-if ~isfield(opt.realign2mni,'rigid'), opt.realign2mni.rigid = true;   end
+if ~isfield(opt,'realign2mni'),            opt.realign2mni            = struct; end
+if ~isfield(opt.realign2mni,'rigid'),      opt.realign2mni.rigid      = true;   end
+if ~isfield(opt.realign2mni,'ix_realign'), opt.realign2mni.ix_realign = 0;   end
+if ~isfield(opt.realign2mni,'n_classes'),  opt.realign2mni.n_classes  = 6;   end
 % coreg options
 if ~isfield(opt,'coreg'),     opt.coreg     = struct; end
 if ~isfield(opt.coreg,'ref'), opt.coreg.ref = 1;      end
