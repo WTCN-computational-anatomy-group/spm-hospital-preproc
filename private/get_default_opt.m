@@ -33,6 +33,7 @@ if ~isfield(opt.labels,'part'), opt.labels.part = [];     end
 % reset-origin options
 if ~isfield(opt,'reset_orig'),          opt.reset_orig          = struct; end
 if ~isfield(opt.reset_orig,'only_neg'), opt.reset_orig.only_neg = false;  end
+if ~isfield(opt.reset_orig,'deg'),      opt.reset_orig.deg      = 1;  end
 % realign2mni options
 if ~isfield(opt,'realign2mni'),            opt.realign2mni            = struct; end
 if ~isfield(opt.realign2mni,'rigid'),      opt.realign2mni.rigid      = true;   end

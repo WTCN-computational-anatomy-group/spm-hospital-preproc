@@ -72,7 +72,7 @@ if opt.do.res_orig
     if ~opt.do.superres && opt.do.vx
         vx = opt.vx.size;
     end
-    [Nii,M] = reset_origin(Nii, opt.reset_orig.only_neg, vx);
+    [Nii,M] = reset_origin(Nii,opt.reset_orig,vx);
 end
 
 if opt.do.real_mni

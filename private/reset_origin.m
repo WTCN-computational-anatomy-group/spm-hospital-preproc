@@ -1,5 +1,9 @@
-function [Nii,M] = reset_origin(Nii,only_neg,vx)
+function [Nii,M] = reset_origin(Nii,opt,vx)
 if nargin < 3, vx = [];    end
+
+only_neg = opt.only_neg;
+deg      = opt.deg;
+
 
 fprintf('Resetting origin...')
 N    = numel(Nii{1});
@@ -11,7 +15,7 @@ for n=1:N
         continue
     end
     f = Nii{1}(n).dat.fname;    
-    f = nm_reorient(f,vx);
+    f = nm_reorient(f,vx,'ro',deg);
     
     M{n} = do_reset_origin(f);
     
