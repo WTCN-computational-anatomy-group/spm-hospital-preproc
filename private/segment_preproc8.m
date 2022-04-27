@@ -9,9 +9,14 @@ dir_out  = opt.dir_out;
 make_4d  = opt.make_4d;
 domask   = opt.domask;
 maskvol  = opt.maskvol;
+ix_chan  = opt.ix_chan;
 
 if ~isempty(dir_out) && ~(exist(dir_out, 'dir') == 7)
     mkdir(dir_out); 
+end
+
+if ix_chan > 0
+    Nii{1} = Nii{1}(ix_chan);
 end
 
 K = 6;             % Number of tissue classes

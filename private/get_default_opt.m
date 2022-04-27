@@ -70,6 +70,7 @@ if ~isfield(opt.segment,'dir_out'),  opt.segment.dir_out  = [];     end
 if ~isfield(opt.segment,'make_4d'),  opt.segment.make_4d  = false;  end
 if ~isfield(opt.segment,'domask'),   opt.segment.domask   = false;  end
 if ~isfield(opt.segment,'maskvol'),  opt.segment.maskvol  = 1;  end
+if ~isfield(opt.segment,'ix_chan'),  opt.segment.ix_chan  = 0;  end
 % Normalise options
 if ~isfield(opt,'normalise'),     opt.normalise     = struct; end
 if ~isfield(opt.normalise,'vox'), opt.normalise.vox = [];  end
