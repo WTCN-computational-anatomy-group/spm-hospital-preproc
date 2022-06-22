@@ -23,7 +23,7 @@ function oNii = do_reslice(VRef,NiiLabels)
 Mn  = VRef(1).mat;
 dmn = VRef(1).dim;
 Ml  = NiiLabels(1).mat;
-lab = single(NiiLabels(1).dat());
+lab = round(single(NiiLabels(1).dat()));
 fnl = NiiLabels(1).dat.fname;
 
 M = Ml\Mn;
