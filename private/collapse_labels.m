@@ -12,7 +12,7 @@ if numel(Nii) > 1
         nii     = Nii{2}(n).dat();
         nlabels = do_collapse(nii,part);
         
-        Nii{2}(n).dat(:,:,:) = nlabels;
+        Nii{2}(n).dat(:,:,:) = uint8(nlabels);
     end    
     
     fprintf('done!\n')

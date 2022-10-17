@@ -93,6 +93,7 @@ if numel(Nii) > 1
         im = Nii_n.dat();        
         if max(im(:)) > 255, error('Copy labels: values over 255!'); end
         
+        im = uint8(im);
         write_nii(nf, im, Nii_n.mat, 'Patient-Preprocessing Copy', 'uint8');            
         
         Nii{2}(n) = nifti(nf);

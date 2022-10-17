@@ -45,12 +45,8 @@ for l=ul
     l12(msk1) = l;
 end     
 % Overwrite image data
-VO             = spm_vol(fnl);
-VO.dim(1:3)    = dmn;        
-VO.mat         = Mn;
-VO             = spm_create_vol(VO);        
-Nii            = nifti(VO.fname);    
-Nii.dat(:,:,:) = round(l12); 
+l12 = int8(round(l12));
+write_nii(fnl,l12,Mn,NiiLabels(1).descrip,'uint8');
 % Return label nifti
 oNii = nifti(fnl);
 %==========================================================================
